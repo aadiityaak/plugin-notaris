@@ -1,0 +1,36 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.cmb2-postbox .cmb-row:not(:last-of-type) {
+    border: none !important;
+}
+
+.cmb2-postbox .cmb-repeat-group-field,
+.cmb-field-list .cmb-row {
+    padding: 0 0 15px 0 !important;
+    margin: 0 !important;
+}
+
+.cmb-row input,
+.cmb-row select,
+.cmb-row textarea {
+    width: 100% !important
+}
+
+.cmb-row.cmb-remove-field-row {
+    padding: 5px !important;
+    background: #ddd;
+    border-radius: 4px;
+}
+.cmb-remove-group-row {
+    left: -15px !important;
+}
+.wp-list-table #draft_kerja {
+    width: 65%;
+}
+
+.application-passwords {
+    display: none !important;
+}
