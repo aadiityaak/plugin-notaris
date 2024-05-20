@@ -499,7 +499,12 @@ function jobdesk_shortcode($atts) {
         'posts_per_page' => $atts['posts_per_page'],
         'paged' => $atts['paged'],
     );
+    // if administrator
+    if (!current_user_can('administrator')) {
+        $query_args['meta_key'] = 'job_desk_id_staff';
+        $query_args['meta_value'] = get_current_user_id();
 
+    }
 
     $query = new WP_Query($query_args);
 

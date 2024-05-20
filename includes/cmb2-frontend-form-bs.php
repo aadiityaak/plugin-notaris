@@ -84,11 +84,11 @@ class CMB2_Frontend_Form_Bs {
                 } elseif(isset($_POST['judul_job_desk']) && isset($_POST['job_desk_draft_kerja'])){
                     // Add notice of submission
                     $output .= '<div class="alert alert-success">Update data <b>'.$_POST['judul_job_desk'].'</b><br> klik tombol dibawah jika tidak di redirect otomatis. <br><a class="btn btn-sm btn-dark text-white" href="'.get_site_url().'/kelola-prosses-kerja/?user_id='.$new_id.'">Tambah Data Order</a></div>';
-                    $output .= '<script>window.parent.location.href = "'.get_site_url().'/tracking-order/?kode-layanan='.get_the_title($_POST['job_desk_draft_kerja']).'";</script>';
+                    $output .= '<script>window.parent.location.href = "'.get_site_url().'/jobdesk/?user_id='.$_POST['job_desk_draft_kerja'].'";</script>';
                 }elseif(isset($_POST['tanggal_order'])){
                     // Add notice of submission
                     $output .= '<div class="alert alert-success">Update data berhasil.</b> klik tombol dibawah jika tidak di redirect otomatis. <br><a class="btn btn-sm btn-dark text-white" href="'.get_site_url().'/tracking-order/?kode-layanan='.$new_id.'">Jobdesk</a></div>';
-                    $output .= '<script>window.location.href = "'.get_site_url().'/tracking-order/?kode-layanan='.$new_id.'";</script>';
+                    $output .= '<script>window.location.href = "'.get_site_url().'/jobdesk/?user_id='.$new_id.'";</script>';
                 }else {
                     $output .= '<div class="alert alert-success">Update data berhasil.</div>';
                 }
@@ -127,8 +127,12 @@ class CMB2_Frontend_Form_Bs {
     if ($show) {
         $output .= $form;
     }
+    // if administrator
+    if( !current_user_can( 'administrator' ) && $metabox_id && $metabox_id == 'pekerjaan_metabox' ){
+        return '<div class="card mx-auto p-2 p-md-3" style="max-width:500px;">Silahkan login sebagai administrator</div>';
+    }
 
-        return '<div class="card mx-auto p-2 p-md-3" style="max-width:500px;">'.$output.'</div>';
+    return '<div class="card mx-auto p-2 p-md-3" style="max-width:500px;">'.$output.'</div>';
     }
 
     function handle_submit($cmb, $post_data = array()){
