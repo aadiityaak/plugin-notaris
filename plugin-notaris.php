@@ -403,7 +403,7 @@ $current_user = wp_get_current_user();
         return 'Silahkan login sebagai administrator untuk melihat data.';
     }
     ?>
-    <div class="table-responsive">
+    <div class="table-responsive m-3">
         <div class="mb-2 row mx-0">
             <div class="col-sm-6 px-0">
                 <a class="btn btn-sm btn-success text-white" href="<?php echo get_site_url();?>/kelola-prosses-kerja/">Tambah Order</a>
@@ -442,12 +442,14 @@ $current_user = wp_get_current_user();
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="bg-blue text-white" scope="col">No</th>
-                    <th class="bg-blue text-white" scope="col">Layanan</th>
-                    <th class="bg-blue text-white" scope="col">Klien</th>
+                    <th class="bg-blue text-white" scope="col">No Order</th>
+                    <th class="bg-blue text-white" scope="col">Tanggal Order</th>
+                    <th class="bg-blue text-white" scope="col">Nama</th>
+                    <th class="bg-blue text-white" scope="col">Alamat</th>
                     <th class="bg-blue text-white" scope="col">Kategori</th>
-                    <th class="bg-blue text-white" scope="col">Staff</th>
-                    <th class="bg-blue text-white text-end" scope="col">Tindakan</th>
+                    <th class="bg-blue text-white" scope="col">Keterangan</th>
+                    <th class="bg-blue text-white" scope="col">Petugas</th>
+                    <th class="bg-blue text-white text-end" scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -479,13 +481,10 @@ $current_user = wp_get_current_user();
                                 </a>
                             </td>
                             <td>
-                                <?php echo get_post_meta($post->ID, 'layanan', true); ?><br/>
-                                <small class="text-muted">
                                 <?php 
                                 $tgl = get_post_meta($post->ID, 'tanggal_order', true);
                                 echo $tgl ? date("d/m/Y", strtotime($tgl)) : '';
                                 ?>
-                                </small>
                             </td>
                             <td>
                             <?php 
@@ -494,8 +493,9 @@ $current_user = wp_get_current_user();
                             echo '<a href="?konsumen='.$customer.'">'.$nama.'</a>';
                             //echo '<small>('.get_post_meta($customer, '_customer_data_whatsapp', true).')</small>';
                             ?>
-                            <br>
-                            <small class="text-muted"><?php echo get_post_meta($customer, '_customer_data_alamat', true); ?></small>
+                            </td>
+                            <td>
+                                <small class="text-muted"><?php echo get_post_meta($customer, '_customer_data_alamat', true); ?></small>
                             </td>
                             <td>
                                 <small>
@@ -523,6 +523,9 @@ $current_user = wp_get_current_user();
                                 </small>
                             </td>
                             <td>
+                                <?php echo get_post_meta($post->ID, 'layanan', true); ?><br/>
+                            </td>
+                            <td>
                                 <small>
                                 <?php
                                 // Mendapatkan ID penulis berdasarkan ID postingan
@@ -538,13 +541,11 @@ $current_user = wp_get_current_user();
                             </td>
                             <td class="text-end">
                                 <div class="text-end btn-group">
-                                    <?php if(current_user_can('administrator')){ ?>
                                     <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">
                                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                                         </svg>
                                     </a>
-                                    <?php } ?>
                                     <a class="btn btn-info btn-sm text-white" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
                                             <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/><path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/><path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>

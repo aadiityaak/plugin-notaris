@@ -127,11 +127,6 @@ class CMB2_Frontend_Form_Bs {
     if ($show) {
         $output .= $form;
     }
-    // if administrator
-    if( !current_user_can( 'administrator' ) && $metabox_id && $metabox_id == 'pekerjaan_metabox' ){
-        return '<div class="card mx-auto p-2 p-md-3" style="max-width:500px;">Silahkan login sebagai administrator</div>';
-    }
-
     return '<div class="card mx-auto p-2 p-md-3" style="max-width:500px;">'.$output.'</div>';
     }
 

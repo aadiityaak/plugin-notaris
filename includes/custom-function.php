@@ -486,6 +486,7 @@ function custom_job_desk_column($column, $post_id)
 function jobdesk_shortcode($atts) {
     ob_start();
     global $post;
+    $get_post_id = $_GET['post_id'] ?? '';
 
     // Pengaturan atribut shortcode
     $atts = shortcode_atts(array(
@@ -500,14 +501,27 @@ function jobdesk_shortcode($atts) {
         'paged' => $atts['paged'],
     );
     // if administrator
-    if (!current_user_can('administrator')) {
+    if (!current_user_can('administrator') && empty($get_post_id) ) {
         $query_args['meta_key'] = 'job_desk_id_staff';
         $query_args['meta_value'] = get_current_user_id();
-
+    } elseif ($get_post_id) {
+        $query_args['meta_key'] = 'job_desk_draft_kerja';
+        $query_args['meta_value'] = $get_post_id;
     }
-
+    // echo '<pre>'.print_r($query_args, 1).' -'.$get_post_id.'</pre>';
     $query = new WP_Query($query_args);
 
+    // Jika $get_post_id ditemukan maka tampilkan detail job_desk dengan ID $get_post_id
+    if ($get_post_id) {
+        echo '<div class="container">';
+            echo '<div class="card">';
+                echo '<div class="card-body">';
+                    echo '<h5 class="card-title">'.get_post_meta($get_post_id, 'judul_job_desk', true).'</h5>';
+                    echo '<p class="card-text">-</p>';
+                echo '</div>';
+            echo '</div>';
+        echo '</div>';
+    }
     // Menampilkan daftar post dalam tabel
     if ($query->have_posts()) {
         echo '<div class="container">';
@@ -532,6 +546,7 @@ function jobdesk_shortcode($atts) {
             $query->the_post();
             $post_id = $post->ID;
             $id_staff = get_post_meta($post_id, 'job_desk_id_staff', true);
+            $disable_button = ($id_staff != get_current_user_id() && !current_user_can('administrator')) ? 'disabled' : '';
             $parent = get_post_meta($post_id, 'job_desk_draft_kerja', true);
             $user_info = get_userdata($id_staff);
             $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect='.get_site_url().'/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
@@ -545,12 +560,12 @@ function jobdesk_shortcode($atts) {
             echo '<td>' . get_post_meta($post_id, 'job_desk_end', true) . '</td>';
             echo '<td>' . get_post_meta($post_id, 'job_desk_status', true) . '</td>';
             echo '<td>';
-                echo '<button type="button" data-url="'.get_site_url().'/kelola-job-desk/?post_id='.$post->ID.'" class="btn btn-sm me-1 btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                echo '<button type="button" data-url="'.get_site_url().'/kelola-job-desk/?post_id='.$post->ID.'" class="btn btn-sm me-1 btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop" '.$disable_button.'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                     </svg>
                 </button>';
-                echo '<a class="btn btn-dark btn-sm text-white" href="'.$delete_url.'">
+                echo '<a class="btn btn-dark btn-sm text-white '.$disable_button.'" href="'.$delete_url.'">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                     </svg>

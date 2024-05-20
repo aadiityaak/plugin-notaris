@@ -61,9 +61,16 @@ function get_users_options() {
     $users = get_users( array( 'fields' => array( 'ID', 'user_login' ) ) );
     $user_options = array();
 
-    foreach ( $users as $user ) {
-        $user_options[ $user->ID ] = $user->user_login;
+    // tampilkan semua user jika administrator
+    if ( current_user_can( 'administrator' ) ) {
+        foreach ( $users as $user ) {
+            $user_options[ $user->ID ] = $user->user_login;
+        }
+    } else {
+        $user_options[ get_current_user_id() ] = get_userdata( get_current_user_id() )->user_login;
     }
+
+
 
     return $user_options;
 }
