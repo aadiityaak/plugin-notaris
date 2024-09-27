@@ -25,10 +25,10 @@ class Custom_Plugin_Shortcode
     {
         $user_id = $_GET['user_id'] ?? '';
         $user_data = get_userdata($user_id);
-        $full_name = $user_data->first_name;
-        $user_login = $user_data->user_login;
-        $email = $user_data->user_email;
-        $user_role = $user_data->roles[0];
+        $full_name = $user_data->first_name ?? '';
+        $user_login = $user_data->user_login ?? '';
+        $email = $user_data->user_email ?? '';
+        $user_role = $user_data->roles[0] ?? '';
         $address = get_user_meta($user_id, 'address', true);
         $poto_profil = get_user_meta($user_id, 'poto_profil', true);
         $password = get_user_meta($user_id, 'password', true);

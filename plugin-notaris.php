@@ -645,7 +645,27 @@ function draft_kerja_shortcode()
                                 ?>
                             </td>
                             <td>
+                                <?php
+                                // Mendapatkan semua post type job_desk berdasarkan post meta job_desk_draft_kerja = $post->ID
+                                $job_desk_posts = get_posts(array(
+                                    'post_type'      => 'job_desk',
+                                    'posts_per_page' => -1,
+                                    'meta_key'       => 'job_desk_draft_kerja',
+                                    'meta_value'     => $post->ID,
+                                ));
+                                // Menghitung total job_desk posts
+                                $total_job_desk_posts = count($job_desk_posts);
 
+                                // Menampilkan job_desk posts
+                                $selesai = [];
+                                foreach ($job_desk_posts as $job_desk_post) {
+                                    $status = get_post_meta($job_desk_post->ID, 'job_desk_status', true);
+                                    if ($status == 'Selesai') {
+                                        $selesai[] = $job_desk_post->ID;
+                                    }
+                                }
+                                echo count($selesai) . ' dari ' . $total_job_desk_posts;
+                                ?>
                             </td>
                             <td>
                                 <small>
@@ -686,17 +706,17 @@ function draft_kerja_shortcode()
                                             <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
                                         </svg>
                                     </a>
-                                    <a class="btn btn-info btn-sm text-white load-pdf" data-url="<?php echo get_site_url(); ?>/page-print/?proses_kerja=<?php echo $post->ID ?>" data-bs-toggle="modal" data-bs-target="#exampleModalPrint">
+                                    <!-- <a class="btn btn-info btn-sm text-white load-pdf" data-url="<?php echo get_site_url(); ?>/page-print/?proses_kerja=<?php echo $post->ID ?>" data-bs-toggle="modal" data-bs-target="#exampleModalPrint">
                                         <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-filetype-pdf" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803q.43 0 .732-.173.305-.175.463-.474a1.4 1.4 0 0 0 .161-.677q0-.375-.158-.677a1.2 1.2 0 0 0-.46-.477q-.3-.18-.732-.179m.545 1.333a.8.8 0 0 1-.085.38.57.57 0 0 1-.238.241.8.8 0 0 1-.375.082H.788V12.48h.66q.327 0 .512.181.185.183.185.522m1.217-1.333v3.999h1.46q.602 0 .998-.237a1.45 1.45 0 0 0 .595-.689q.196-.45.196-1.084 0-.63-.196-1.075a1.43 1.43 0 0 0-.589-.68q-.396-.234-1.005-.234zm.791.645h.563q.371 0 .609.152a.9.9 0 0 1 .354.454q.118.302.118.753a2.3 2.3 0 0 1-.068.592 1.1 1.1 0 0 1-.196.422.8.8 0 0 1-.334.252 1.3 1.3 0 0 1-.483.082h-.563zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638z" />
                                             </svg></span>
-                                    </a>
+                                    </a> -->
                                     <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">
                                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
                                         </svg>
                                     </a>
-                                    <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?post_id=<?php echo $post->ID; ?>">
+                                    <!-- <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
                                             <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
                                             <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
@@ -707,7 +727,7 @@ function draft_kerja_shortcode()
                                             <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
                                             <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
                                         </svg>
-                                    </a>
+                                    </a> -->
                                     <a class="btn btn-danger btn-sm btn-danger text-white" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />

@@ -65,21 +65,21 @@ class Custom_Plugin_Post_Types
             )
         );
 
-        register_post_type(
-            'dokumen',
-            array(
-                'labels' => array(
-                    'name' => __('Dokumen'),
-                    'singular_name' => __('Dokumen'),
-                    'add_new' => 'Tambah Dokumen',
-                    'add_new_item' => 'Tambah Dokumen',
-                    'textdomain',
-                ),
-                'public' => true,
-                'has_archive' => false,
-                'supports' => array('title', 'author'),
-            )
-        );
+        // register_post_type(
+        //     'dokumen',
+        //     array(
+        //         'labels' => array(
+        //             'name' => __('Dokumen'),
+        //             'singular_name' => __('Dokumen'),
+        //             'add_new' => 'Tambah Dokumen',
+        //             'add_new_item' => 'Tambah Dokumen',
+        //             'textdomain',
+        //         ),
+        //         'public' => true,
+        //         'has_archive' => false,
+        //         'supports' => array('title', 'author'),
+        //     )
+        // );
     }
 }
 

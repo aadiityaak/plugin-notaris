@@ -184,7 +184,7 @@ add_action('manage_users_custom_column', 'custom_user_table_column_content', 10,
 function get_customer_posts()
 {
     $post_id = $_GET['post_id'] ?? '';
-    $user_id = $_GET['user_id'] ? $_GET['user_id'] : get_post_meta($post_id, 'customer_select', true);
+    $user_id = $_GET['user_id'] ?? get_post_meta($post_id, 'customer_select', true);
     $args = array(
         'post_type'      => 'data_pelanggan',
         'posts_per_page' => -1,
@@ -565,7 +565,7 @@ function jobdesk_shortcode($atts)
 
         $biaya_transaksi = get_post_meta($get_post_id, 'biaya_transaksi', true);
         $biaya_transfer = get_post_meta($get_post_id, 'biaya_transfer', true);
-        $dibayar = get_post_meta($get_post_id, 'dibayar', true);
+        $dibayar = intval(get_post_meta($get_post_id, 'dibayar', true));
 
         // Jika nilai kosong atau tidak valid, set ke 0
         $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
@@ -638,13 +638,14 @@ function jobdesk_shortcode($atts)
             $disable_button = ($id_staff != get_current_user_id() && !current_user_can('administrator')) ? 'disabled' : '';
             $parent = get_post_meta($post_id, 'job_desk_draft_kerja', true);
             $user_info = get_userdata($id_staff);
+            $firt_name = $user_info->first_name ?? '';
             $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
             echo '<tr>';
             echo '<th scope="row">' . $count . '</th>';
             echo '<td><a href="?post_id=' . $parent . '">' . get_post_meta($parent, 'layanan', true) . '</a><br><small class="text-muted">ID: ' . get_the_title($parent) . '<small></td>';
             echo '<td>' . get_post_meta($post_id, 'judul_job_desk', true) . '</td>';
             echo '<td>' . get_post_meta($post_id, 'job_desk_kategori_select', true) . '</td>';
-            echo '<td>' . $user_info->first_name . ' ' . $user_info->last_name . '</td>';
+            echo '<td>' . $firt_name . '</td>';
             echo '<td>' . convertDateFormat(get_post_meta($post_id, 'job_desk_start', true)) . '</td>';
             echo '<td>' . convertDateFormat(get_post_meta($post_id, 'job_desk_end', true)) . '</td>';
             echo '<td>' . get_post_meta($post_id, 'job_desk_status', true) . '</td>';

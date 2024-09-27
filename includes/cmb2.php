@@ -83,6 +83,17 @@ function pekerjaan_metabox_metabox()
             'archive' => 'Archive',
         ),
     ));
+
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Upload Dokumen', 'text-domain'),
+        'id'   => 'dokumen',
+        'type' => 'file',
+        'query_args' => array(
+            'type' => array(
+                'application/pdf',
+            ),
+        ),
+    ));
 }
 
 function get_users_options()
@@ -358,30 +369,30 @@ function job_desk_metabox_metabox()
 }
 
 // METABOX DOKUMEN
-add_action('cmb2_init', 'dokumen_metabox_metabox');
-function dokumen_metabox_metabox()
-{
-    $user_id = $_GET['user_id'] ?? '';
-    $prefix = '';
+// add_action('cmb2_init', 'dokumen_metabox_metabox');
+// function dokumen_metabox_metabox()
+// {
+//     $user_id = $_GET['user_id'] ?? '';
+//     $prefix = '';
 
-    // Buat metabox
-    $cmb_group = new_cmb2_box(array(
-        'id'            => 'dokumen_metabox',
-        'title'         => esc_html__('Dokumen Details', 'text-domain'),
-        'object_types'  => array('dokumen'), // Ganti 'post' denganenis postingan yang Anda inginkan
-    ));
+//     // Buat metabox
+//     $cmb_group = new_cmb2_box(array(
+//         'id'            => 'dokumen_metabox',
+//         'title'         => esc_html__('Dokumen Details', 'text-domain'),
+//         'object_types'  => array('dokumen'), // Ganti 'post' denganenis postingan yang Anda inginkan
+//     ));
 
-    $cmb_group->add_field(array(
-        'name' => esc_html__('Upload Dokumen', 'text-domain'),
-        'id'   => 'dokumen',
-        'type' => 'file',
-        'query_args' => array(
-            'type' => array(
-                'application/pdf',
-            ),
-        ),
-    ));
-}
+//     $cmb_group->add_field(array(
+//         'name' => esc_html__('Upload Dokumen', 'text-domain'),
+//         'id'   => 'dokumen',
+//         'type' => 'file',
+//         'query_args' => array(
+//             'type' => array(
+//                 'application/pdf',
+//             ),
+//         ),
+//     ));
+// }
 
 
 // Add JavaScript to handle the conditional logic
