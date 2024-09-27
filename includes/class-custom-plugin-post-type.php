@@ -1,4 +1,5 @@
 <?php
+
 /**
  *
  * @link       https://velocitydeveloper.com
@@ -22,11 +23,12 @@ class Custom_Plugin_Post_Types
     public function register_post_types()
     {
         // Register Blog Post Type
-        register_post_type('draft_kerja',
+        register_post_type(
+            'draft_kerja',
             array(
                 'labels' => array(
-                    'name' => __('Draft Kerja'),
-                    'singular_name' => __('Draft Kerja'),
+                    'name' => __('Proses Kerja'),
+                    'singular_name' => __('Proses Kerja'),
                 ),
                 'public' => true,
                 'has_archive' => true,
@@ -34,7 +36,8 @@ class Custom_Plugin_Post_Types
             )
         );
 
-        register_post_type('data_pelanggan',
+        register_post_type(
+            'data_pelanggan',
             array(
                 'labels' => array(
                     'name' => __('Data Pelanggan'),
@@ -46,13 +49,31 @@ class Custom_Plugin_Post_Types
             )
         );
 
-        register_post_type('job_desk',
+        register_post_type(
+            'job_desk',
             array(
                 'labels' => array(
                     'name' => __('Job Desk'),
                     'singular_name' => __('Job Desk'),
                     'add_new' => 'Tambah Job Desk',
-                    'add_new_item' => 'Tambah Job Desk', 'textdomain',
+                    'add_new_item' => 'Tambah Job Desk',
+                    'textdomain',
+                ),
+                'public' => true,
+                'has_archive' => false,
+                'supports' => array('title', 'author'),
+            )
+        );
+
+        register_post_type(
+            'dokumen',
+            array(
+                'labels' => array(
+                    'name' => __('Dokumen'),
+                    'singular_name' => __('Dokumen'),
+                    'add_new' => 'Tambah Dokumen',
+                    'add_new_item' => 'Tambah Dokumen',
+                    'textdomain',
                 ),
                 'public' => true,
                 'has_archive' => false,
@@ -63,19 +84,20 @@ class Custom_Plugin_Post_Types
 }
 
 // membuat taxonomy kategori job desk untuk post type job_desk
-function create_taxonomy_kategori_job_desk() {
+function create_taxonomy_kategori_job_desk()
+{
     register_taxonomy(
         'kategori_job_desk',
         'job_desk',
         array(
-            'label' => __( 'Kategori Job Desk' ),
-            'rewrite' => array( 'slug' => 'kategori-job-desk' ),
+            'label' => __('Kategori Job Desk'),
+            'rewrite' => array('slug' => 'kategori-job-desk'),
             'hierarchical' => true,
             'show_in_rest' => true,
         )
     );
 }
-add_action( 'init', 'create_taxonomy_kategori_job_desk' );
+add_action('init', 'create_taxonomy_kategori_job_desk');
 
 // Inisialisasi class Custom_Post_Types_Register
 $custom_post_types_register = new Custom_Plugin_Post_Types();
