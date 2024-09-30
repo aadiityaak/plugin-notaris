@@ -73,16 +73,16 @@ function pekerjaan_metabox_metabox()
         'type' => 'checkbox',
     ));
 
-    $cmb_group->add_field(array(
-        'name' => esc_html__('Status', 'text-domain'),
-        'id'   => 'status_post',
-        'type' => 'select',
-        'column' => true,
-        'options' => array(
-            'aktif' => 'Aktif',
-            'archive' => 'Archive',
-        ),
-    ));
+    // $cmb_group->add_field(array(
+    //     'name' => esc_html__('Status', 'text-domain'),
+    //     'id'   => 'status_post',
+    //     'type' => 'select',
+    //     'column' => true,
+    //     'options' => array(
+    //         'aktif' => 'Aktif',
+    //         'archive' => 'Archive',
+    //     ),
+    // ));
 
     $cmb_group->add_field(array(
         'name' => esc_html__('Upload Dokumen', 'text-domain'),
