@@ -1,24 +1,25 @@
 <?php
+
 /**
  * Template Name: Notaris Print
  *
-*/
+ */
 
 $proses_kerja       = isset($_GET['proses_kerja']) ? $_GET['proses_kerja'] : '';
 $download   = isset($_GET['download']) ? $_GET['download'] : 0;
-echo 'aaaa';
-if ( empty($proses_kerja) ){
+
+if (empty($proses_kerja)) {
     return false;
 }
 echo 'bbbb';
-$args = 
-array(
-    "post_type" => "draft_kerja", 
-    // "s" => $proses_kerja
+$args =
+    array(
+        "post_type" => "draft_kerja",
+        // "s" => $proses_kerja
     );
-$query = get_posts( $args );
+$query = get_posts($args);
 
-if(empty($query)) {
+if (empty($query)) {
     return false;
 }
 echo 'cccc';
@@ -27,43 +28,37 @@ require 'vendor/autoload.php';
 
 //start html
 ob_start();
-if(isset($query[0]->ID)){
+if (isset($query[0]->ID)) {
     $meta_key = get_post_meta($query[0]->ID);
     $customer_select = $meta_key['customer_select'][0] ?? '';
     $layanan = $meta_key['layanan'][0] ?? '';
     $tanggal_order = $meta_key['tanggal_order'][0] ?? '';
-    $sertipikat_asli = $meta_key['sertipikat_asli'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
+    $sertifikat_asli = $meta_key['sertifikat_asli'][0] ?? [];
+    $sertipikat_asli = $sertifikat_asli == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $ktp = isset($meta_key['ktp'][0]) && $meta_key['ktp'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $kk = isset($meta_key['kk'][0]) && $meta_key['kk'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $pbb = isset($meta_key['pbb'][0]) && $meta_key['pbb'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
-    ?>
+?>
     <div class="container">
         <div style="text-align: center;">
             <div style="padding-bottom:10px;">
                 <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">NOTARIS & PPAT</div>
-                <div>DAERAH KERJA KABUPATEN GNUNG</small><br>
-                <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">ZULFIKAR PANDU WIRANTARA, SH., MKn.</div>
-                <div style="padding-bottom:5px;"><b>Alamat Kantor:</b> Perum Bumi Logandeng Asri Blok A6 - Jl. Manthous KM 01 Desa Logandeng, Kecamatan Playen, Kabupaten Gunungkidul E-mail zulfikarpandu@rocketmail.com | Telepon 087738899662/087775757493</div>
-            </div>
-            <hr class="s2">
-        </div>
-        <div class="frame-kotak" style="text-align: center;">
-            <span>TANDA TERIMA</span>
-        </div>
-        <br>
-        <div class="frame-konten">
-            <div style="text-align: left;">
-                <div style="padding-bottom:5px;">Telah terima dari: Tuan/Nyonya <?php echo get_the_title($customer_select); ?></div>
-                <div style="padding-bottom:5px;">Proses: 
-                    <?php 
-                        if(!empty($layanan)) {
-                            echo $layanan;
-                        } else {
-                            echo ' ................................................................................................................................................';
-                        }
-                    ?>
+                <div>DAERAH KERJA KABUPATEN GUNUNGKIDUL</small><br>
+                    <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">ZULFIKAR PANDU WILANTARA, SH., MKn.</div>
+                    <div style="padding-bottom:5px;"><b>Alamat Kantor:</b> Perum Bumi Logandeng Asri Blok A6 - Jl. Manthous KM 01 Desa Logandeng, Kecamatan Playen, Kabupaten Gunungkidul E-mail zulfikarpandu@rocketmail.com | Telepon 087738899662/087775757493</div>
                 </div>
-                <div style="padding-bottom:5px;">Tanggal Order: <?php echo $tanggal_order; ?></div>
+                <hr class="s2">
+            </div>
+            <div class="frame-kotak" style="text-align: center;">
+                <span>TANDA TERIMA</span>
+            </div>
+            <br>
+            <div class="frame-konten">
+                <div style="text-align: left;">
+                    <div style="padding-bottom:5px;">Telah diterima dari: Tuan/Nyonya .......................................................................................................</div>
+                    <div style="padding-bottom:5px;">Proses: ................................................................................................................................................</div>
+                </div>
+                <div style="padding-bottom:5px;">Tanggal Order: ....................................................................................................................................</div>
                 <div>No. Telp: ..............................................................................................................................................</div>
             </div>
             <div style="padding:30px 0 30px;">
@@ -120,21 +115,21 @@ if(isset($query[0]->ID)){
         </div>
         <br><br>
         <div class="frame-footer">
-        <table style="width: 100%;">
-            <tr>
-                <td style="text-align: center; width: 65%;">
-                    Yang Menerima,
-                    <br><br><br><br>
-                    <b>(ZULFIKAR PANDU WIRANTARA, SH., MKn.)</b>
-                </td>
-                <td style="text-align: center; width: 35%;">
-                    Yang Menyerahkan,
-                    <br><br><br><br>
-                    (.................................................)
-                </td>
-            </tr>
-        </table>
-    </div>
+            <table style="width: 100%;">
+                <tr>
+                    <td style="text-align: center; width: 65%;">
+                        Yang Menerima,
+                        <br><br><br><br>
+                        <b>(ZULFIKAR PANDU WIRANTARA, SH., MKn.)</b>
+                    </td>
+                    <td style="text-align: center; width: 35%;">
+                        Yang Menyerahkan,
+                        <br><br><br><br>
+                        (.................................................)
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     <style>
         .container {
@@ -142,11 +137,11 @@ if(isset($query[0]->ID)){
         }
 
         hr.s2 {
-            height:5px;
+            height: 5px;
             border-left: 0 !important;
             border-right: 0 !important;
-            border-top:1px solid black;
-            border-bottom:2px solid black;
+            border-top: 1px solid black;
+            border-bottom: 2px solid black;
         }
 
         .frame-kotak span {
@@ -156,17 +151,20 @@ if(isset($query[0]->ID)){
             margin: 20px 10px;
             font-weight: 600;
         }
+
         .table-berkas th {
-        border-bottom: 1px solid #aaa;
-        border-top: 1px solid #aaa;
-        border-collapse: collapse;
-        padding: 5px;
+            border-bottom: 1px solid #aaa;
+            border-top: 1px solid #aaa;
+            border-collapse: collapse;
+            padding: 5px;
         }
+
         .table-berkas td {
-        border-bottom: 1px solid #ddd;
-        border-collapse: collapse;
-        padding: 5px;
+            border-bottom: 1px solid #ddd;
+            border-collapse: collapse;
+            padding: 5px;
         }
+
         /* .frame-konten {
             display: inline-block;
         }
@@ -178,8 +176,6 @@ if(isset($query[0]->ID)){
         /* .frame-konten tr:nth-child(even) {
             background-color: #dddddd;
         } */
-
-
     </style>
 
     <script>
@@ -188,7 +184,7 @@ if(isset($query[0]->ID)){
             $('.frame-konten span::after').css('width', contentWidth);
         });
     </script>
-    <?php
+<?php
     // print_r($meta_key);
 }
 $html = ob_get_clean();
@@ -214,29 +210,30 @@ $dompdf->setPaper('A4', 'potrait');
 $dompdf->render();
 
 // Output the generated PDF to Browser
-$dompdf->stream("Notaris " . $resi, array("Attachment" => $download));
+$dompdf->stream("Tanda Terima " . $customer_name, array("Attachment" => $download));
 
-function proses_job_desk() {
+function proses_job_desk()
+{
     ob_start();
     global $post;
     $current_user = wp_get_current_user();
 
     // Cetak peran pengguna yang saat ini masuk
     // echo 'Peran pengguna saat ini: ' . implode( ', ', $current_user->roles );
-    if ( !(current_user_can( 'administrator' ) || current_user_can( 'editor' )) ) {
+    if (!(current_user_can('administrator') || current_user_can('editor'))) {
         return 'Silahkan login sebagai administrator untuk melihat data.';
     }
     $kode_layanan = $_GET['kode-layanan'] ?? '';
-    $draft_id = bl_get_post_id_by_title( $kode_layanan );
-    $customer_id = get_post_meta( $draft_id, 'customer_select', true );
-    $customer_name = get_post_meta( $customer_id, '_customer_data_nama_lengkap', true );
+    $draft_id = bl_get_post_id_by_title($kode_layanan);
+    $customer_id = get_post_meta($draft_id, 'customer_select', true);
+    $customer_name = get_post_meta($customer_id, '_customer_data_nama_lengkap', true);
 
-    $tanggal_order = get_post_meta( $draft_id, 'tanggal_order', true );
-    $layanan = get_post_meta( $draft_id, 'layanan', true );
+    $tanggal_order = get_post_meta($draft_id, 'tanggal_order', true);
+    $layanan = get_post_meta($draft_id, 'layanan', true);
 
     $post_judul_job_desk = isset($_POST['judul_job_desk']) ? 'show d-block' : '';
 
-    $the_query = new WP_Query( 
+    $the_query = new WP_Query(
         array(
             'post_type' => 'job_desk',
             'meta_key' => 'job_desk_draft_kerja',
@@ -244,7 +241,7 @@ function proses_job_desk() {
         )
     );
 
-    ?>
+?>
     <div class="container">
         <table class="table" style="width: 100%;">
             <thead>
@@ -280,13 +277,13 @@ function proses_job_desk() {
                                 </span>
                             </td>
                             <td><span><?php echo $judul; ?></span></td>
-                            <td><span><?php echo $tanggal_mulai; ?></span></td>
-                            <td><span><?php echo $tanggal_selesai; ?></span></td>
+                            <td><span><?php echo convertDateFormat($tanggal_mulai); ?></span></td>
+                            <td><span><?php echo convertDateFormat($tanggal_selesai); ?></span></td>
                         </tr>
-                <?php
+                    <?php
                     }
                 } else {
-                ?>
+                    ?>
                     <tr>
                         <td colspan="4">Jobdesk tidak ditemukan untuk order ini. Klik <b>Tambah Job Desk</b> di bawah ini untuk menambahkan job desk baru.</td>
                     </tr>
@@ -298,7 +295,7 @@ function proses_job_desk() {
         </table>
 
     </div>
-    <?php
+<?php
     return ob_get_clean();
 }
 // add_shortcode('tracking-order', 'tracking_order_shortcode');

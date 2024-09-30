@@ -1,15 +1,16 @@
 <?php
 
-add_action( 'cmb2_init', 'pekerjaan_metabox_metabox' );
-function pekerjaan_metabox_metabox() {
+add_action('cmb2_init', 'pekerjaan_metabox_metabox');
+function pekerjaan_metabox_metabox()
+{
     $user_id = $_GET['user_id'] ?? '';
     $prefix = '';
     // Buat metabox
-    $cmb_group = new_cmb2_box( array(
+    $cmb_group = new_cmb2_box(array(
         'id'            => 'pekerjaan_metabox',
-        'title'         => esc_html__( 'Pekerjaan Details', 'text-domain' ),
-        'object_types'  => array( 'draft_kerja' ), // Ganti 'post' dengan jenis postingan yang Anda inginkan
-    ) );
+        'title'         => esc_html__('Pekerjaan Details', 'text-domain'),
+        'object_types'  => array('draft_kerja'), // Ganti 'post' dengan jenis postingan yang Anda inginkan
+    ));
 
     // Field Pilihan Pelanggan
     $cmb_group->add_field(array(
@@ -30,44 +31,83 @@ function pekerjaan_metabox_metabox() {
         'id'               => $prefix . 'layanan',
         'type'             => 'text',
     ));
+    $cmb_group->add_field(array(
+        'name'             => 'Biaya Transaksi',
+        'id'               => $prefix . 'biaya_transaksi',
+        'type'             => 'text',
+    ));
+    $cmb_group->add_field(array(
+        'name'             => 'Biaya Transfer',
+        'id'               => $prefix . 'biaya_transfer',
+        'type'             => 'text',
+    ));
 
-    $cmb_group->add_field( array(
+    $cmb_group->add_field(array(
+        'name'             => 'Dibayar',
+        'id'               => $prefix . 'dibayar',
+        'type'             => 'text',
+    ));
+
+    $cmb_group->add_field(array(
         'name' => 'Sertipikat Asli',
         'desc' => 'konsumen menyertakan sertipikat asli.',
         'id'   => 'sertipikat_asli',
         'type' => 'checkbox',
-    ) );
-    $cmb_group->add_field( array(
+    ));
+    $cmb_group->add_field(array(
         'name' => 'PBB',
         'desc' => 'konsumen menyertakan PBB.',
         'id'   => 'pbb',
         'type' => 'checkbox',
-    ) );
-    $cmb_group->add_field( array(
+    ));
+    $cmb_group->add_field(array(
         'name' => 'KTP',
         'desc' => 'konsumen menyertakan KTP.',
         'id'   => 'ktp',
         'type' => 'checkbox',
-    ) );
-    $cmb_group->add_field( array(
+    ));
+    $cmb_group->add_field(array(
         'name' => 'KK',
         'desc' => 'konsumen menyertakan KK.',
         'id'   => 'kk',
         'type' => 'checkbox',
-    ) );
+    ));
+
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Status', 'text-domain'),
+        'id'   => 'status_post',
+        'type' => 'select',
+        'column' => true,
+        'options' => array(
+            'aktif' => 'Aktif',
+            'archive' => 'Archive',
+        ),
+    ));
+
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Upload Dokumen', 'text-domain'),
+        'id'   => 'dokumen',
+        'type' => 'file',
+        'query_args' => array(
+            'type' => array(
+                'application/pdf',
+            ),
+        ),
+    ));
 }
 
-function get_users_options() {
-    $users = get_users( array( 'fields' => array( 'ID', 'user_login' ) ) );
+function get_users_options()
+{
+    $users = get_users(array('fields' => array('ID', 'user_login')));
     $user_options = array();
 
     // tampilkan semua user jika administrator
-    if ( current_user_can( 'administrator' ) ) {
-        foreach ( $users as $user ) {
-            $user_options[ $user->ID ] = $user->user_login;
+    if (current_user_can('administrator')) {
+        foreach ($users as $user) {
+            $user_options[$user->ID] = $user->user_login;
         }
     } else {
-        $user_options[ get_current_user_id() ] = get_userdata( get_current_user_id() )->user_login;
+        $user_options[get_current_user_id()] = get_userdata(get_current_user_id())->user_login;
     }
 
 
@@ -76,52 +116,53 @@ function get_users_options() {
 }
 
 
-add_action( 'cmb2_admin_init', 'register_user_profile_metabox' );
-function register_user_profile_metabox() {
+add_action('cmb2_admin_init', 'register_user_profile_metabox');
+function register_user_profile_metabox()
+{
 
-	/**
-	 * Metabox for the user profile screen
-	 */
-	$cmb_user = new_cmb2_box( array(
-		'id'               => 'user_edit',
-		'title'            => esc_html__( 'User Profile Metabox', 'cmb2' ), // Doesn't output for user boxes
-		'object_types'     => array( 'user' ), // Tells CMB2 to use user_meta vs post_meta
-		'show_names'       => true,
-		'new_user_section' => 'add-new-user', // where form will show on new user page. 'add-existing-user' is only other valid option.
-	) );
+    /**
+     * Metabox for the user profile screen
+     */
+    $cmb_user = new_cmb2_box(array(
+        'id'               => 'user_edit',
+        'title'            => esc_html__('User Profile Metabox', 'cmb2'), // Doesn't output for user boxes
+        'object_types'     => array('user'), // Tells CMB2 to use user_meta vs post_meta
+        'show_names'       => true,
+        'new_user_section' => 'add-new-user', // where form will show on new user page. 'add-existing-user' is only other valid option.
+    ));
 
-	$cmb_user->add_field( array(
-		'name' => esc_html__( 'Jabatan', 'cmb2' ),
-		'desc' => esc_html__( '', 'cmb2' ),
-		'id'   => 'jabatan',
-		'type'    => 'select',
-		'options' => array(
-			'Notaris' => esc_html__( 'Notaris', 'cmb2' ),
-			'PPAT (Pejabat Pembuat Akta Tanah)' => esc_html__( 'PPAT (Pejabat Pembuat Akta Tanah)', 'cmb2' ),
-			'Staff Notaris' => esc_html__( 'Staff Notaris', 'cmb2' ),
-            'Pegawai Administrasi' => esc_html__( 'Pegawai Administrasi', 'cmb2' ),
-            'Staff Keuangan' => esc_html__( 'Staff Keuangan', 'cmb2' ),
-            'Pengacara atau Legal Consultant' => esc_html__( 'Pengacara atau Legal Consultant', 'cmb2' ),
-		),
-	) );
-    $cmb_user->add_field( array(
-		'name' => esc_html__( 'Status', 'cmb2' ),
-		'desc' => esc_html__( '', 'cmb2' ),
-		'id'   => 'status',
-		'type'    => 'select',
-		'options' => array(
-			'' => esc_html__( '-', 'cmb2' ),
-			'Aktif' => esc_html__( 'Aktif', 'cmb2' ),
-			'Non Aktif' => esc_html__( 'Non Aktif', 'cmb2' ),
-		),
-	) );
-
+    $cmb_user->add_field(array(
+        'name' => esc_html__('Jabatan', 'cmb2'),
+        'desc' => esc_html__('', 'cmb2'),
+        'id'   => 'jabatan',
+        'type'    => 'select',
+        'options' => array(
+            'Notaris' => esc_html__('Notaris', 'cmb2'),
+            'PPAT (Pejabat Pembuat Akta Tanah)' => esc_html__('PPAT (Pejabat Pembuat Akta Tanah)', 'cmb2'),
+            'Staff Notaris' => esc_html__('Staff Notaris', 'cmb2'),
+            'Pegawai Administrasi' => esc_html__('Pegawai Administrasi', 'cmb2'),
+            'Staff Keuangan' => esc_html__('Staff Keuangan', 'cmb2'),
+            // 'Pengacara atau Legal Consultant' => esc_html__('Pengacara atau Legal Consultant', 'cmb2'),
+        ),
+    ));
+    $cmb_user->add_field(array(
+        'name' => esc_html__('Status', 'cmb2'),
+        'desc' => esc_html__('', 'cmb2'),
+        'id'   => 'status',
+        'type'    => 'select',
+        'options' => array(
+            '' => esc_html__('-', 'cmb2'),
+            'Aktif' => esc_html__('Aktif', 'cmb2'),
+            'Non Aktif' => esc_html__('Non Aktif', 'cmb2'),
+        ),
+    ));
 }
 
 // Pastikan bahwa CMB2 sudah diinstal dan diaktifkan di situs Anda
 
 // Fungsi untuk menambahkan meta box pada post type 'draft_kerja'
-function add_customer_data_metabox() {
+function add_customer_data_metabox()
+{
     $prefix = '_customer_data_';
 
     $cmb = new_cmb2_box(array(
@@ -152,59 +193,119 @@ function add_customer_data_metabox() {
         'id'   => $prefix . 'whatsapp',
         'type' => 'text',
     ));
-    
-    $cmb->add_field( array(
-        'name'     => 'Pilih Kategori',
-        'id'       => 'kategori_konsumen',
-        'desc'     => '',
-        'type'     => 'taxonomy_select',
-        'taxonomy' => 'konsumen_kategori',
-        // 'apply_term' => false, // If set to false, saves the term to meta instead of setting term on the object.
+
+    // Kategori field
+    $cmb->add_field(array(
+        'name'    => __('Kategori', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'kategori',
+        'type'    => 'select',
+        'options' => array(
+            'Pribadi' => __('Pribadi', 'cmb2'),
+            'Bank'    => __('Bank', 'cmb2'),
+        ),
+    ));
+
+    // Bank field (hidden by default)
+    $cmb->add_field(array(
+        'name'    => __('Bank', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'bank',
+        'type'    => 'select',
+        'options' => array(
+            'BPR BBA'           => __('BPR BBA', 'cmb2'),
+            'BPR Pala Pusat'    => __('BPR Pala Pusat', 'cmb2'),
+            'BPR Pala Cabang'   => __('BPR Pala Cabang', 'cmb2'),
+            'BPR Danamas Prime' => __('BPR Danamas Prime', 'cmb2'),
+            'BPR Arum Mandiri'  => __('BPR Arum Mandiri', 'cmb2'),
+            'BPRS Madina Mandiri' => __('BPRS Madina Mandiri', 'cmb2'),
+            'BMT Sejahtera Ummat' => __('BMT Sejahtera Ummat', 'cmb2'),
+        ),
         // 'attributes' => array(
-        // 	'data-min-length' => 2, // Override minimum length
-        // 	'data-delay'      => 100, // Override delay
+        //     'style' => 'display:none;', // Hide the field initially
         // ),
-    ) );
-    // $cmb->add_field( array(
-    //     'name' => 'File Pendukung',
-    //     'desc' => '',
-    //     'id'   => 'file',
-    //     'type' => 'file_list',
-    //     // 'preview_size' => array( 100, 100 ), // Default: array( 50, 50 )
-    //     // 'query_args' => array( 'type' => 'image' ), // Only images attachment
-    //     // Optional, override default text strings
-    //     'text' => array(
-    //         'add_upload_files_text' => 'Tambah / Upload File', // default: "Add or Upload Files"
-    //         'remove_image_text' => 'Hapus', // default: "Remove Image"
-    //         'file_text' => 'File', // default: "File:"
-    //         'file_download_text' => 'Download', // default: "Download"
-    //         'remove_text' => 'Hapus', // default: "Remove"
-    //     ),
-    // ) );
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Pekerjaan', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'pekerjan',
+        'type'    => 'select',
+        'options' => array(
+            'Pilih Opsi' => __('Pilih Opsi', 'cmb2'),
+            'Skmht' => __('Skmht', 'cmb2'),
+            'Apht'  => __('Apht', 'cmb2'),
+            'Fidusian' => __('Fidusian', 'cmb2'),
+            'Jual beli' => __('Jual beli', 'cmb2'),
+            'Hibah' => __('Hibah', 'cmb2'),
+            'Turun waris' => __('Turun waris', 'cmb2'),
+            'Aphb' => __('Aphb', 'cmb2'),
+            'Pendirian PT' => __('Pendirian PT', 'cmb2'),
+            'Pendirian CV' => __('Pendirian CV', 'cmb2'),
+            'Pendirian yayasan' => __('Pendirian yayasan', 'cmb2'),
+            'Pendirian PT perorangan' => __('Pendirian PT perorangan', 'cmb2'),
+            'Pendirian akta cabang' => __('Pendirian akta cabang', 'cmb2'),
+            'Perubahan PT' => __('Perubahan PT', 'cmb2'),
+            'Perub CV' => __('Perub CV', 'cmb2'),
+            'Perub Yayasan' => __('Perub Yayasan', 'cmb2'),
+            'Pecah sertifikat' => __('Pecah sertifikat', 'cmb2'),
+            'Pengeringan' => __('Pengeringan', 'cmb2'),
+            'PBG' => __('PBG', 'cmb2'),
+            'Peningkatan Hak' => __('Peningkatan Hak', 'cmb2'),
+        )
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Sertifikat', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'sertifikat',
+        'type'    => 'text',
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Nilai Transaksi', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'nilai_transaksi',
+        'type'    => 'text',
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Data Pajak Pembeli', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'pajak_pembeli',
+        'type'    => 'text',
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Data Pajak Penjual', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'pajak_penjual',
+        'type'    => 'text',
+    ));
 }
 
 add_action('cmb2_init', 'add_customer_data_metabox');
 
 // METABOX JOB DESK
-add_action( 'cmb2_init', 'job_desk_metabox_metabox' );
-function job_desk_metabox_metabox() {
+add_action('cmb2_init', 'job_desk_metabox_metabox');
+function job_desk_metabox_metabox()
+{
     $user_id = $_GET['user_id'] ?? '';
     $prefix = '';
     // Buat metabox
-    $cmb_group = new_cmb2_box( array(
+    $cmb_group = new_cmb2_box(array(
         'id'            => 'job_desk_metabox',
-        'title'         => esc_html__( 'Pekerjaan Details', 'text-domain' ),
-        'object_types'  => array( 'job_desk' ), // Ganti 'post' dengan jenis postingan yang Anda inginkan
-    ) );
+        'title'         => esc_html__('Pekerjaan Details', 'text-domain'),
+        'object_types'  => array('job_desk'), // Ganti 'post' dengan jenis postingan yang Anda inginkan
+    ));
 
-    $cmb_group->add_field( array(
-        'name' => esc_html__( 'Judul Job Desk', 'text-domain' ),
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Judul Job Desk', 'text-domain'),
         'id'   => 'judul_job_desk',
         'type' => 'text',
-    ) );
+    ));
 
-    $kode_layanan = $_GET['kode-layanan'] ?? '';
-    $draft_id = bl_get_post_id_by_title( $kode_layanan );
+    $draft_id = $_GET['draft_id'] ?? '';
     $cmb_group->add_field(array(
         'name'             => 'Draft Kerja',
         'id'               => 'job_desk_draft_kerja',
@@ -223,18 +324,18 @@ function job_desk_metabox_metabox() {
 
     // Field Pilihan Pelanggan
 
-    $cmb_group->add_field( array(
-        'name'    => esc_html__( 'Kategori', 'text-domain' ),
+    $cmb_group->add_field(array(
+        'name'    => esc_html__('Kategori', 'text-domain'),
         'id'      => 'job_desk_kategori_select',
         'type'    => 'select',
         'options' => array(
-            'Notaris' => esc_html__( 'Notaris', 'text-domain' ),
-            'PPAT' => esc_html__( 'PPAT', 'text-domain' ),
-            'Lainya' => esc_html__( 'Lainya', 'text-domain' ),
+            'Notaris' => esc_html__('Notaris', 'text-domain'),
+            'PPAT' => esc_html__('PPAT', 'text-domain'),
+            'Lainya' => esc_html__('Lainya', 'text-domain'),
             // Tambahkan opsi lain sesuai kebutuhan Anda
         ),
-        
-    ) );
+
+    ));
 
     // $cmb_group->add_field( array(
     //     'name' => esc_html__( 'Pilih Staff', 'text-domain' ),
@@ -243,26 +344,82 @@ function job_desk_metabox_metabox() {
     //     'options_cb' => 'get_users_options', // Gunakan callback untuk mengisi opsi
     // ) );
 
-    $cmb_group->add_field( array(
-        'name' => esc_html__( 'Tanggal Mulai', 'text-domain' ),
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Tanggal Mulai', 'text-domain'),
         'id'   => 'job_desk_start',
         'type' => 'text_date',
-    ) );
+    ));
 
-    $cmb_group->add_field( array(
-        'name' => esc_html__( 'Tanggal Selesai', 'text-domain' ),
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Tanggal Selesai', 'text-domain'),
         'id'   => 'job_desk_end',
         'type' => 'text_date',
-    ) );
+    ));
 
-    $cmb_group->add_field( array(
-        'name'    => esc_html__( 'Status', 'text-domain' ),
+    $cmb_group->add_field(array(
+        'name'    => esc_html__('Status', 'text-domain'),
         'id'      => 'job_desk_status',
         'type'    => 'select',
         'options' => array(
-            '-' => esc_html__( '-', 'text-domain' ),
-            'Pengerjaan' => esc_html__( 'Pengerjaan', 'text-domain' ),
-            'Selesai' => esc_html__( 'Selesai', 'text-domain' ),
+            '-' => esc_html__('-', 'text-domain'),
+            'Pengerjaan' => esc_html__('Pengerjaan', 'text-domain'),
+            'Selesai' => esc_html__('Selesai', 'text-domain'),
         ),
-    ) );
+    ));
 }
+
+// METABOX DOKUMEN
+// add_action('cmb2_init', 'dokumen_metabox_metabox');
+// function dokumen_metabox_metabox()
+// {
+//     $user_id = $_GET['user_id'] ?? '';
+//     $prefix = '';
+
+//     // Buat metabox
+//     $cmb_group = new_cmb2_box(array(
+//         'id'            => 'dokumen_metabox',
+//         'title'         => esc_html__('Dokumen Details', 'text-domain'),
+//         'object_types'  => array('dokumen'), // Ganti 'post' denganenis postingan yang Anda inginkan
+//     ));
+
+//     $cmb_group->add_field(array(
+//         'name' => esc_html__('Upload Dokumen', 'text-domain'),
+//         'id'   => 'dokumen',
+//         'type' => 'file',
+//         'query_args' => array(
+//             'type' => array(
+//                 'application/pdf',
+//             ),
+//         ),
+//     ));
+// }
+
+
+// Add JavaScript to handle the conditional logic
+add_action('cmb2_after_form', function () {
+?>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Function to check the selected category and toggle the bank field
+            function toggleBankField() {
+                var kategori = $('#_customer_data_kategori').val(); // Get the current value of kategori field
+                if (kategori === 'Bank') {
+                    // Show the bank field if 'Bank' is selected
+                    $('#_customer_data_bank').closest('.cmb-row').show();
+                } else {
+                    // Hide the bank field if any other option is selected
+                    $('#_customer_data_bank').closest('.cmb-row').hide();
+                }
+            }
+
+            // Call toggleBankField on page load
+            toggleBankField();
+
+            // Add change event handler for kategori field
+            $('#_customer_data_kategori').on('change', function() {
+                toggleBankField();
+            });
+        });
+    </script>
+<?php
+});
