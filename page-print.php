@@ -33,7 +33,8 @@ if (isset($query[0]->ID)) {
     $customer_select = $meta_key['customer_select'][0] ?? '';
     $layanan = $meta_key['layanan'][0] ?? '';
     $tanggal_order = $meta_key['tanggal_order'][0] ?? '';
-    $sertipikat_asli = $meta_key['sertipikat_asli'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
+    $sertifikat_asli = $meta_key['sertifikat_asli'][0] ?? [];
+    $sertipikat_asli = $sertifikat_asli == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $ktp = isset($meta_key['ktp'][0]) && $meta_key['ktp'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $kk = isset($meta_key['kk'][0]) && $meta_key['kk'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
     $pbb = isset($meta_key['pbb'][0]) && $meta_key['pbb'][0] == 'on' ? '<input type="checkbox" checked>' : '<input type="checkbox">';
