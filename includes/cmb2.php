@@ -36,6 +36,18 @@ function pekerjaan_metabox_metabox()
         'id'               => $prefix . 'biaya_transaksi',
         'type'             => 'text',
     ));
+
+    $cmb_group->add_field(array(
+        'name'    => 'Jenis Pembayaran',
+        'id'      => 'jenis_pembayaran',
+        'type'    => 'radio_inline',
+        'options' => array(
+            'tunai' => __('Tunai', 'cmb2'),
+            'transfer'   => __('Transfer', 'cmb2'),
+        ),
+        'default' => 'standard',
+    ));
+
     $cmb_group->add_field(array(
         'name'             => 'Biaya Transfer',
         'id'               => $prefix . 'biaya_transfer',
@@ -71,6 +83,14 @@ function pekerjaan_metabox_metabox()
         'desc' => 'konsumen menyertakan KK.',
         'id'   => 'kk',
         'type' => 'checkbox',
+    ));
+
+    $cmb_group->add_field(array(
+        'name' => 'Lain - lain',
+        'desc' => 'field description (optional)',
+        'default' => 'standard value (optional)',
+        'id' => 'lain_lain',
+        'type' => 'textarea_small'
     ));
 
     // $cmb_group->add_field(array(
@@ -235,7 +255,36 @@ function add_customer_data_metabox()
             'Pilih Opsi' => __('Pilih Opsi', 'cmb2'),
             'Skmht' => __('Skmht', 'cmb2'),
             'Apht'  => __('Apht', 'cmb2'),
-            'Fidusian' => __('Fidusian', 'cmb2'),
+            'Fidusia' => __('Fidusia', 'cmb2'),
+            'Jual beli' => __('Jual beli', 'cmb2'),
+            'Hibah' => __('Hibah', 'cmb2'),
+            'Turun waris' => __('Turun waris', 'cmb2'),
+            'Aphb' => __('Aphb', 'cmb2'),
+            'Pendirian PT' => __('Pendirian PT', 'cmb2'),
+            'Pendirian CV' => __('Pendirian CV', 'cmb2'),
+            'Pendirian yayasan' => __('Pendirian yayasan', 'cmb2'),
+            'Pendirian PT perorangan' => __('Pendirian PT perorangan', 'cmb2'),
+            'Pendirian akta cabang' => __('Pendirian akta cabang', 'cmb2'),
+            'Perubahan PT' => __('Perubahan PT', 'cmb2'),
+            'Perub CV' => __('Perub CV', 'cmb2'),
+            'Perub Yayasan' => __('Perub Yayasan', 'cmb2'),
+            'Pecah sertifikat' => __('Pecah sertifikat', 'cmb2'),
+            'Pengeringan' => __('Pengeringan', 'cmb2'),
+            'PBG' => __('PBG', 'cmb2'),
+            'Peningkatan Hak' => __('Peningkatan Hak', 'cmb2'),
+        )
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Pekerjaan 2', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'pekerjan_2',
+        'type'    => 'select',
+        'options' => array(
+            'Pilih Opsi' => __('Pilih Opsi', 'cmb2'),
+            'Skmht' => __('Skmht', 'cmb2'),
+            'Apht'  => __('Apht', 'cmb2'),
+            'Fidusia' => __('Fidusia', 'cmb2'),
             'Jual beli' => __('Jual beli', 'cmb2'),
             'Hibah' => __('Hibah', 'cmb2'),
             'Turun waris' => __('Turun waris', 'cmb2'),

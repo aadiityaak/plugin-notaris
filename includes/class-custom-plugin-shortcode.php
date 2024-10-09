@@ -64,6 +64,16 @@ class Custom_Plugin_Shortcode
             ),
         ));
 
+        // PHOBE
+        $cmb_user->add_field(array(
+            'name'    => 'No Telpon/WA',
+            'id'      => 'no_telpon_staff',
+            'type'    => 'text',
+            'attributes' => array(
+                'required' => 'required', // Tambahkan atribut required
+            ),
+        ));
+
         // Email
         $cmb_user->add_field(array(
             'name'    => 'Email',
@@ -75,6 +85,8 @@ class Custom_Plugin_Shortcode
             ),
         ));
 
+
+
         // Role Pengguna
         $cmb_user->add_field(array(
             'name'    => 'Role Pengguna',
@@ -82,8 +94,9 @@ class Custom_Plugin_Shortcode
             'type'    => 'select',
             'default' => $user_role,
             'options' => array(
-                'editor'        => 'Editor',
+                'superadmin' => 'Superadmin',
                 'administrator' => 'Administrator',
+                'editor'        => 'Editor',
             ),
             'default' => 'subscriber',
         ));
