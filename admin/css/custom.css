@@ -34,3 +34,7 @@
 .application-passwords {
     display: none !important;
 }
+
+.user-url-wrap {
+    display: none !important;
+}
