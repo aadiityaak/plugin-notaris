@@ -49,12 +49,6 @@ function pekerjaan_metabox_metabox()
     ));
 
     $cmb_group->add_field(array(
-        'name'             => 'Biaya Transfer',
-        'id'               => $prefix . 'biaya_transfer',
-        'type'             => 'text',
-    ));
-
-    $cmb_group->add_field(array(
         'name'             => 'Dibayar',
         'id'               => $prefix . 'dibayar',
         'type'             => 'text',
@@ -88,7 +82,7 @@ function pekerjaan_metabox_metabox()
     $cmb_group->add_field(array(
         'name' => 'Lain - lain',
         'desc' => 'field description (optional)',
-        'default' => 'standard value (optional)',
+        'default' => '',
         'id' => 'lain_lain',
         'type' => 'textarea_small'
     ));

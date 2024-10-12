@@ -257,7 +257,9 @@ function display_user_list()
         echo '<tr >';
         echo '<th class="bg-blue text-white" style="text-align: center;">No</th>';
         echo '<th class="bg-blue text-white">Nama</th>';
+        echo '<th class="bg-blue text-white">No Telepon</th>';
         echo '<th class="bg-blue text-white">Email</th>';
+        echo '<th class="bg-blue text-white">User Role</th>';
         echo '<th class="bg-blue text-white">Jabatan</th>';
         echo '<th class="bg-blue text-white">Status</th>';
         if (current_user_can('administrator')) {
@@ -272,14 +274,21 @@ function display_user_list()
         // Loop melalui setiap pengguna dan tambahkan ke output
         foreach ($users as $user) {
             $user_id = $user->id;
+            $user_data = get_userdata($user_id);
             $url_edit = get_site_url() . '/kelola-user/?edit=' . $user_id;
+            $poto_profil = get_user_meta($user_id, 'poto_profil', true) ?? 'https://asistennotaris.com/wp-content/uploads/2024/10/user.png';
             $jabatan = get_user_meta($user_id, 'jabatan', true) ?? '-';
-            // Buat URL edit user berdasarkan user ID
+            $no_telpon_staff = get_user_meta($user_id, 'no_telpon_staff', true) ?? '-';
+            $user_role = $user_data->roles[0] ?? '-';
+            $address = get_user_meta($user_id, 'address', true) ?? '-';
             $url_edit = admin_url('user-edit.php?user_id=' . $user_id);
+            $status = get_user_meta($user_id, 'status', true) ?? '-';
             echo '<tr>';
             echo '<td style="text-align: center;">' . $number++ . '.' . '</td>';
-            echo '<td>' . $user->display_name . '</td>';
+            echo '<td><img class="rounded-circle ratio ratio-1x1 me-2" style="width: 100%; height: 100%; max-width: 40px; aspect-ratio: 1/1; object-fit: cover;" src="' . $poto_profil . '">' . $user->display_name . '</td>';
+            echo '<td>' . $no_telpon_staff . '</td>';
             echo '<td>' . $user->user_email . '</td>';
+            echo '<td>' . $user_role . '</td>';
             echo '<td>' . $jabatan . '</td>';
             echo '<td>' . get_user_meta($user_id, 'status', true) . '</td>';
             if (current_user_can('administrator')) {
@@ -291,8 +300,15 @@ function display_user_list()
                             <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
                         </svg>
                     </a>
+                    <!-- Modal -->
+                    <a class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="modal" data-bs-target="#profilModal<?php echo $user_id; ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                        </svg>
+                    </a>
                     <button type="button" class="btn btn-danger btn-sm text-white" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal<?php echo $user_id; ?>">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash3" viewBox="0 0 16 16">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color: #ffffff;" fill="white" class="bi bi-trash3" viewBox="0 0 16 16">
                             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
                         </svg>
                     </button>
@@ -314,6 +330,68 @@ function display_user_list()
                             </div>
                         </div>
                     </div>
+                    <!-- Modal Singgle User -->
+                    <div class="modal fade" id="profilModal<?php echo $user_id; ?>" tabindex="-1" aria-labelledby="profilModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="profilModalLabel">Profil Pengguna</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-12 text-center mb-3">
+                                            <img class="rounded-circle ratio ratio-1x1" style="width: 100%; height: 100%; max-width: 150px; aspect-ratio: 1/1; object-fit: cover;" src="<?php echo $poto_profil; ?>" alt="">
+                                        </div>
+                                        <div class="col-12">
+                                            <ol class="list-group text-start">
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold"><?php echo  $user->display_name; ?></div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">No Telepon</div>
+                                                        <?php echo $no_telpon_staff; ?>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">Email</div>
+                                                        <?php echo $user->user_email; ?>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">User Role</div>
+                                                        <?php echo $user->roles[0]; ?>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">Jabatan</div>
+                                                        <?php echo $jabatan; ?>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">Alamat</div>
+                                                        <?php echo $address; ?>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="">
+                                                        <div class="fw-bold">Status</div>
+                                                        <?php echo $status; ?>
+                                                    </div>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 </td>
     <?php
             }
@@ -595,9 +673,10 @@ function draft_kerja_shortcode()
                                                 <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803q.43 0 .732-.173.305-.175.463-.474a1.4 1.4 0 0 0 .161-.677q0-.375-.158-.677a1.2 1.2 0 0 0-.46-.477q-.3-.18-.732-.179m.545 1.333a.8.8 0 0 1-.085.38.57.57 0 0 1-.238.241.8.8 0 0 1-.375.082H.788V12.48h.66q.327 0 .512.181.185.183.185.522m1.217-1.333v3.999h1.46q.602 0 .998-.237a1.45 1.45 0 0 0 .595-.689q.196-.45.196-1.084 0-.63-.196-1.075a1.43 1.43 0 0 0-.589-.68q-.396-.234-1.005-.234zm.791.645h.563q.371 0 .609.152a.9.9 0 0 1 .354.454q.118.302.118.753a2.3 2.3 0 0 1-.068.592 1.1 1.1 0 0 1-.196.422.8.8 0 0 1-.334.252 1.3 1.3 0 0 1-.483.082h-.563zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638z" />
                                             </svg></span>
                                     </a> -->
-                                    <a class="btn btn-info btn-sm text-white tooltips " data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">
-                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                    <a class="btn btn-info btn-sm text-white tooltips " data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-cloud-arrow-up" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z" />
+                                            <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
                                         </svg>
                                     </a>
                                     <!-- <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?post_id=<?php echo $post->ID; ?>">
@@ -725,6 +804,89 @@ function data_konsumen()
                             </td>
                             <td>
                                 <div class="text-end btn-group" role="group" aria-label="Basic example">
+                                    <!-- Modal Trigger -->
+                                    <a class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="modal" data-bs-target="#konsumenModal<?php echo $post->ID; ?>">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                                        </svg>
+                                    </a>
+
+                                    <!-- Modal Konsumen -->
+                                    <?php
+                                    // Ambil data pengguna yang membuat post
+                                    $user = get_userdata($post->post_author);
+
+                                    // Definisikan variabel jabatan, address, dan status (jika diperlukan)
+                                    $nama = get_post_meta($post->ID, '_customer_data_nama_lengkap', true);
+                                    $whatsapp = get_post_meta($post->ID, '_customer_data_whatsapp', true);
+                                    $kategori = wp_get_post_terms($post->ID, '_customer_data_kategori');
+                                    $alamat = get_post_meta($post->ID, '_customer_data_alamat', true);
+                                    $pekerjaan1 = get_post_meta($post->ID, '_customer_data_pekerjan', true);
+                                    $pekerjaan2 = get_post_meta($post->ID, '_customer_data_pekerjan_2', true);
+                                    $sertifikat = get_post_meta($post->ID, '_customer_data_sertifikat', true);
+                                    $nilai_transaksi = get_post_meta($post->ID, '_customer_data_nilai_transaksi', true);
+                                    $data_pajak_pembeli = get_post_meta($post->ID, '_customer_data_pajak_pembeli', true);
+                                    $data_pajak_penjual = get_post_meta($post->ID, '_customer_data_pajak_penjual', true);
+                                    ?>
+                                    <div class="modal fade" id="konsumenModal<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="konsumenModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="konsumenModalLabel">Data Konsumen</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <ol class="list-group text-start">
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Nama Lengkap</div>
+                                                                    <?php echo $nama; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">WhatsApp </div>
+                                                                    <?php echo $whatsapp; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Kategori</div>
+                                                                    <?php echo '-'; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Alamat</div>
+                                                                    <?php echo $alamat; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Pekerjaan 1</div>
+                                                                    <?php echo '-'; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Pekerjaan 2</div>
+                                                                    <?php echo '-'; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Sertifikat</div>
+                                                                    <?php echo $sertifikat; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Nilai Transaksi</div>
+                                                                    <?php echo $nilai_transaksi; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Data Pajak Pembeli</div>
+                                                                    <?php echo $data_pajak_pembeli; ?>
+                                                                </li>
+                                                                <li class="list-group-item">
+                                                                    <div class="fw-bold">Data Pajak Penjual</div>
+                                                                    <?php echo $data_pajak_penjual; ?>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <a class="btn btn-sm btn-primary text-white" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit Data" href="<?php echo get_site_url(); ?>/kelola-konsumen/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
                                             <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />

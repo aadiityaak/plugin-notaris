@@ -69,6 +69,7 @@ class Custom_Plugin_Shortcode
             'name'    => 'No Telpon/WA',
             'id'      => 'no_telpon_staff',
             'type'    => 'text',
+            'column'  => true,
             'attributes' => array(
                 'required' => 'required', // Tambahkan atribut required
             ),
