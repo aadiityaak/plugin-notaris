@@ -673,11 +673,19 @@ function draft_kerja_shortcode()
                                                 <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5zM1.6 11.85H0v3.999h.791v-1.342h.803q.43 0 .732-.173.305-.175.463-.474a1.4 1.4 0 0 0 .161-.677q0-.375-.158-.677a1.2 1.2 0 0 0-.46-.477q-.3-.18-.732-.179m.545 1.333a.8.8 0 0 1-.085.38.57.57 0 0 1-.238.241.8.8 0 0 1-.375.082H.788V12.48h.66q.327 0 .512.181.185.183.185.522m1.217-1.333v3.999h1.46q.602 0 .998-.237a1.45 1.45 0 0 0 .595-.689q.196-.45.196-1.084 0-.63-.196-1.075a1.43 1.43 0 0 0-.589-.68q-.396-.234-1.005-.234zm.791.645h.563q.371 0 .609.152a.9.9 0 0 1 .354.454q.118.302.118.753a2.3 2.3 0 0 1-.068.592 1.1 1.1 0 0 1-.196.422.8.8 0 0 1-.334.252 1.3 1.3 0 0 1-.483.082h-.563zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638z" />
                                             </svg></span>
                                     </a> -->
-                                    <a class="btn btn-info btn-sm text-white tooltips " data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-cloud-arrow-up" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z" />
-                                            <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
-                                        </svg>
+                                    <a class="btn btn-info btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
+                                        <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                            </svg>
+                                        </span>
+                                        <span class="<?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-cloud-arrow-up" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z" />
+                                                <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                                            </svg>
+                                        </span>
                                     </a>
                                     <!-- <a class="btn btn-info btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?post_id=<?php echo $post->ID; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
@@ -691,6 +699,53 @@ function draft_kerja_shortcode()
                                             <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
                                         </svg>
                                     </a> -->
+                                    <!-- Button trigger modal -->
+                                    <a class="btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                        <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Jobdesk">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                                            </svg>
+                                        </span>
+                                    </a>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="view-post-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                                        <?php
+                                        $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
+                                        $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
+                                        $layanan_order = get_post_meta($post->ID, 'layanan', true) ?: '';
+                                        $customer = get_post_meta($post->ID, 'customer_select', true);
+                                        $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
+                                        $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
+                                        $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                        $alamat = get_post_meta($customer, '_customer_data_alamat', true);
+                                        ?>
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="viewModalLabel"><?php echo '#' . $post->post_title; ?></h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-start">
+                                                            <ul class="list-group">
+                                                                <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
+                                                                <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
+                                                                <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
+                                                                <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
+                                                                <li class="list-group-item"><b>Biaya Transaksi : </b> <?php echo $biaya_transaksi; ?></li>
+                                                                <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-12">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <a class="btn btn-danger btn-sm btn-danger text-white" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                             <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
@@ -806,10 +861,12 @@ function data_konsumen()
                                 <div class="text-end btn-group" role="group" aria-label="Basic example">
                                     <!-- Modal Trigger -->
                                     <a class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="modal" data-bs-target="#konsumenModal<?php echo $post->ID; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
-                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                                        </svg>
+                                        <span class="tooltips" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Data Konsumen">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                                            </svg>
+                                        </span>
                                     </a>
 
                                     <!-- Modal Konsumen -->
@@ -826,8 +883,41 @@ function data_konsumen()
                                     $pekerjaan2 = get_post_meta($post->ID, '_customer_data_pekerjan_2', true);
                                     $sertifikat = get_post_meta($post->ID, '_customer_data_sertifikat', true);
                                     $nilai_transaksi = get_post_meta($post->ID, '_customer_data_nilai_transaksi', true);
+                                    // Pastikan $nilai_transaksi adalah angka
+                                    if (is_numeric($nilai_transaksi)) {
+                                        // Format nilai transaksi tanpa 'Rp' terlebih dahulu
+                                        $nilai_transaksi = number_format($nilai_transaksi, 0, ',', '.');
+
+                                        // Tambahkan 'Rp ' di depannya setelah diformat
+                                        $nilai_transaksi = 'Rp ' . $nilai_transaksi;
+                                    } else {
+                                        // Jika bukan angka, tampilkan nilai default
+                                        $nilai_transaksi = '-';
+                                    }
                                     $data_pajak_pembeli = get_post_meta($post->ID, '_customer_data_pajak_pembeli', true);
+                                    // Pastikan $data_pajak_pembeli adalah angka
+                                    if (is_numeric($data_pajak_pembeli)) {
+                                        // Format data pajak pembeli tanpa 'Rp' terlebih dahulu
+                                        $data_pajak_pembeli = number_format($data_pajak_pembeli, 0, ',', '.');
+
+                                        // Tambahkan 'Rp ' di depannya setelah diformat
+                                        $data_pajak_pembeli = 'Rp ' . $data_pajak_pembeli;
+                                    } else {
+                                        // Jika bukan angka, tampilkan nilai default
+                                        $data_pajak_pembeli = '-';
+                                    }
                                     $data_pajak_penjual = get_post_meta($post->ID, '_customer_data_pajak_penjual', true);
+                                    // Pastikan $data_pajak_penjual adalah angka
+                                    if (is_numeric($data_pajak_penjual)) {
+                                        // Format data pajak penjual tanpa 'Rp' terlebih dahulu
+                                        $data_pajak_penjual = number_format($data_pajak_penjual, 0, ',', '.');
+
+                                        // Tambahkan 'Rp ' di depannya setelah diformat 
+                                        $data_pajak_penjual = 'Rp ' . $data_pajak_penjual;
+                                    } else {
+                                        // Jika bukan angka, tampilkan nilai default
+                                        $data_pajak_penjual = '-';
+                                    }
                                     ?>
                                     <div class="modal fade" id="konsumenModal<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="konsumenModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-lg modal-dialog-centered">

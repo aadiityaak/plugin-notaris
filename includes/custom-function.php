@@ -430,7 +430,7 @@ function tracking_order_shortcode()
             });
         });
     </script>
-<?php
+    <?php
     return ob_get_clean();
 }
 add_shortcode('tracking-order', 'tracking_order_shortcode');
@@ -580,46 +580,64 @@ function jobdesk_shortcode($atts)
         $kekurangan = $total_biaya - $dibayar;
         $format_kekurangan = 'Rp. ' . number_format($kekurangan, 2, ',', '.');
 
-        echo '<div class="container">';
-        echo '<div class="card mb-5">';
-        echo '<div class="card-header text-center" style="background-color: #4EA9F5;">';
-        echo '<h5 class="card-title"><b style="color: white;">' . get_post_meta($get_post_id, 'layanan', true) . '</b></h5>';
-        echo '</div>';
-        echo '<div class="card-body">';
-        echo '<div class="row ">';
-        echo '<div class="col-md-6">';
-        echo '<p class="card-text">';
-        echo '<b>Tanggal Order: </b>' . convertDateFormat(get_post_meta($get_post_id, 'tanggal_order', true)) . '<br>';
-        echo '<b>ID Order: </b>' . get_the_title($get_post_id);
-        echo '<br>';
-        echo '<b>Nama Cust: </b>' . $customer_name . '<br>';
+    ?>
+        <div class="container">
+            <div class="card mb-5">
+                <div class="card-header text-center" style="background-color: #4EA9F5;">
+                    <h5 class="card-title">
+                        <b style="color: white;">
+                            <?php echo get_post_meta($get_post_id, 'layanan', true); ?>
+                        </b>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <b>Tanggal Order: </b>
+                                <?php echo convertDateFormat(get_post_meta($get_post_id, 'tanggal_order', true)); ?>
+                                <br>
+                                <b>ID Order: </b>
+                                <?php echo get_the_title($get_post_id); ?>
+                                <br>
+                                <b>Nama Cust: </b>
+                                <?php echo $customer_name; ?>
+                                <br>
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <b>Biaya Transaksi: </b>
+                            <?php echo $formatted_total_biaya; ?>
+                            <br>
+                            <b>Dibayar: </b>
+                            <?php echo $format_dibayar; ?>
+                            <br>
+                            <b>Kekurangan: </b>
+                            <?php echo $format_kekurangan; ?>
+                            <br>
+                        </div>
+                    </div>
+                    <div class="text-end my-2">
+                        <button type="button" data-url="<?php echo get_site_url(); ?>/kelola-job-desk/?draft_id=<?php echo $get_post_id; ?>"
+                            class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-journal-plus" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5" />
+                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                            </svg>
+                            Tambah Job Desk
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
-        echo '</p>';
-        echo '</div>';
-        echo '<div class="col-md-6 text-end">';
-        echo '<b>Biaya Transaksi: </b>' . $formatted_total_biaya . '<br>';
-        echo '<b>Dibayar: </b>' . $format_dibayar . '<br>';
-        echo '<b>Kekurangan: ' . $format_kekurangan . '<br></b>';
-        echo '</div>';
-
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+    <?php
     }
     // Menampilkan daftar post dalam tabel
     if ($query->have_posts()) {
         echo '<div class="container">';
-        echo '<div class="text-end mb-2">';
-        echo '<button type="button" data-url="' . get_site_url() . '/kelola-job-desk/?draft_id=' . $get_post_id . '" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-journal-plus" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5"/>
-            <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/>
-            <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>
-        </svg>
-        Tambah Job Desk
-        </button>';
-        echo '</div>';
+        echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
         echo '<thead>';
         echo '<tr>';
@@ -656,6 +674,7 @@ function jobdesk_shortcode($atts)
             echo '<td>' . convertDateFormat(get_post_meta($post_id, 'job_desk_end', true)) . '</td>';
             echo '<td>' . get_post_meta($post_id, 'job_desk_status', true) . '</td>';
             echo '<td>';
+            echo '<div class="btn-group" role="group" aria-label="Basic example">';
             echo '<button type="button" data-url="' . get_site_url() . '/kelola-job-desk/?post_id=' . $post->ID . '" class="btn btn-sm me-1 btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ' . $disable_button . '>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">
                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
@@ -666,6 +685,7 @@ function jobdesk_shortcode($atts)
                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                     </svg>
                 </a>';
+            echo '</div>';
             echo '</td>';
             echo '</tr>';
 
@@ -674,6 +694,7 @@ function jobdesk_shortcode($atts)
 
         echo '</tbody>';
         echo '</table>';
+        echo '</div>';
         // <?php
         // echo '<pre>' . print_r($query, 1) . '</pre>';
         pagination_bootstrap($query->found_posts, $post_per_page);
@@ -681,7 +702,7 @@ function jobdesk_shortcode($atts)
     } else {
         echo '<p class="px-3">No job desks found.</p>';
     }
-?>
+    ?>
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
