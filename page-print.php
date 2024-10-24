@@ -43,9 +43,9 @@ if (isset($query[0]->ID)) {
         <div style="text-align: center;">
             <div style="padding-bottom:10px;">
                 <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">NOTARIS & PPAT</div>
-                <div>DAERAH KERJA KABUPATEN GUNUNGKIDUL</small><br>
-                    <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">ZULFIKAR PANDU WILANTARA, SH., MKn.</div>
-                    <div style="padding-bottom:5px;"><b>Alamat Kantor:</b> Perum Bumi Logandeng Asri Blok A6 - Jl. Manthous KM 01 Desa Logandeng, Kecamatan Playen, Kabupaten Gunungkidul E-mail zulfikarpandu@rocketmail.com | Telepon 087738899662/087775757493</div>
+                <div>DAERAH KERJA KABUPATEN Yogyakarta</small><br>
+                    <div style="font-size: 18px; font-weight: 600;padding-bottom:5px;">AKUN DEMO TANDA TERIMA</div>
+                    <div style="padding-bottom:5px;"><b>Alamat Kantor:</b> Alamat demo sistem notaris, E-mail akundemo@gmail.com | Telepon 085432123455/081234567890</div>
                 </div>
                 <hr class="s2">
             </div>
@@ -111,7 +111,7 @@ if (isset($query[0]->ID)) {
         </div>
         <br><br>
         <div style="text-align: right;">
-            <span>Gunungkidul,........................20.......</span>
+            <span>Yogyakarta,........................20.......</span>
         </div>
         <br><br>
         <div class="frame-footer">
@@ -120,7 +120,7 @@ if (isset($query[0]->ID)) {
                     <td style="text-align: center; width: 65%;">
                         Yang Menerima,
                         <br><br><br><br>
-                        <b>(ZULFIKAR PANDU WIRANTARA, SH., MKn.)</b>
+                        <b>(Akun Demo)</b>
                     </td>
                     <td style="text-align: center; width: 35%;">
                         Yang Menyerahkan,

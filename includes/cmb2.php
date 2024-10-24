@@ -4,6 +4,7 @@ add_action('cmb2_init', 'pekerjaan_metabox_metabox');
 function pekerjaan_metabox_metabox()
 {
     $user_id = $_GET['user_id'] ?? '';
+
     $prefix = '';
     // Buat metabox
     $cmb_group = new_cmb2_box(array(
@@ -35,6 +36,7 @@ function pekerjaan_metabox_metabox()
         'name'             => 'Biaya Transaksi',
         'id'               => $prefix . 'biaya_transaksi',
         'type'             => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
     ));
 
     $cmb_group->add_field(array(
@@ -53,6 +55,7 @@ function pekerjaan_metabox_metabox()
         'id'               => $prefix . 'dibayar',
         'type'             => 'text',
     ));
+
 
     $cmb_group->add_field(array(
         'name' => 'Sertipikat Asli',
@@ -81,7 +84,7 @@ function pekerjaan_metabox_metabox()
 
     $cmb_group->add_field(array(
         'name' => 'Lain - lain',
-        'desc' => 'field description (optional)',
+        // 'desc' => 'field description (optional)',
         'default' => '',
         'id' => 'lain_lain',
         'type' => 'textarea_small'
@@ -98,16 +101,16 @@ function pekerjaan_metabox_metabox()
     //     ),
     // ));
 
-    $cmb_group->add_field(array(
-        'name' => esc_html__('Upload Dokumen', 'text-domain'),
-        'id'   => 'dokumen',
-        'type' => 'file',
-        'query_args' => array(
-            'type' => array(
-                'application/pdf',
-            ),
-        ),
-    ));
+    // $cmb_group->add_field(array(
+    //     'name' => esc_html__('Upload Dokumen', 'text-domain'),
+    //     'id'   => 'dokumen',
+    //     'type' => 'file',
+    //     'query_args' => array(
+    //         'type' => array(
+    //             'application/pdf',
+    //         ),
+    //     ),
+    // ));
 }
 
 function get_users_options()
@@ -299,6 +302,13 @@ function add_customer_data_metabox()
     ));
 
     $cmb->add_field(array(
+        'name'    => __('Pekerjaan Lainnya', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'pekerjaan_lainnya',
+        'type'    => 'text',
+    ));
+
+    $cmb->add_field(array(
         'name'    => __('Sertifikat', 'cmb2'),
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'sertifikat',
@@ -310,6 +320,23 @@ function add_customer_data_metabox()
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'nilai_transaksi',
         'type'    => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Harga Real', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'harga_real',
+        'type'    => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
+    ));
+
+    $cmb->add_field(array(
+        'name'    => __('Harga Kesepakatan', 'cmb2'),
+        'desc'    => __('', 'cmb2'),
+        'id'      => $prefix . 'harga_kesepakatan',
+        'type'    => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
     ));
 
     $cmb->add_field(array(
@@ -317,6 +344,7 @@ function add_customer_data_metabox()
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'pajak_pembeli',
         'type'    => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
     ));
 
     $cmb->add_field(array(
@@ -324,6 +352,7 @@ function add_customer_data_metabox()
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'pajak_penjual',
         'type'    => 'text',
+        'attributes' => array('class' => 'format-rupiah form-control'),
     ));
 }
 
@@ -412,29 +441,109 @@ function job_desk_metabox_metabox()
 }
 
 // METABOX DOKUMEN
-// add_action('cmb2_init', 'dokumen_metabox_metabox');
-// function dokumen_metabox_metabox()
+add_action('cmb2_init', 'dokumen_metabox_metabox');
+function dokumen_metabox_metabox()
+{
+    $user_id = $_GET['user_id'] ?? '';
+    $prefix = '';
+    $post_id = $_GET['post_id'] ?? '';
+
+    // Buat metabox
+    $cmb_group = new_cmb2_box(array(
+        'id'            => 'dokumen_metabox',
+        'title'         => esc_html__('Dokumen Details', 'text-domain'),
+        'object_types'  => array('dokumen'), // Ganti 'post' denganenis postingan yang Anda inginkan
+    ));
+
+    // Field type post
+    $cmb_group->add_field(array(
+        'name' => esc_html__('', 'text-domain'),
+        'id'   => 'id_order',
+        'type' => 'hidden',
+        'post_type' => 'draft_kerja',
+        'default' => $post_id,
+        // 'attributes' => array('type' => 'format-rupiah form-control'),
+    ));
+
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Upload Dokumen', 'text-domain'),
+        'id'   => 'pdf',
+        'type' => 'file',
+        'query_args' => array(
+            'type' => array(
+                'application/pdf',
+            ),
+        ),
+    ));
+}
+
+// METABOX UPLOAD BERKAS NOTARIS
+// add_action('cmb2_init', 'upload_berkas_metabox');
+// function job_desk_metabox_metabox()
 // {
-//     $user_id = $_GET['user_id'] ?? '';
-//     $prefix = '';
-
-//     // Buat metabox
-//     $cmb_group = new_cmb2_box(array(
-//         'id'            => 'dokumen_metabox',
-//         'title'         => esc_html__('Dokumen Details', 'text-domain'),
-//         'object_types'  => array('dokumen'), // Ganti 'post' denganenis postingan yang Anda inginkan
+//  $cmb->add_field(array(
+//         'name'    => __('No', 'cmb2'),
+//         'desc'    => __('', 'cmb2'),
+//         'id'      => $prefix . 'no_akta',
+//         'type'    => 'text',
 //     ));
 
-//     $cmb_group->add_field(array(
-//         'name' => esc_html__('Upload Dokumen', 'text-domain'),
-//         'id'   => 'dokumen',
-//         'type' => 'file',
-//         'query_args' => array(
-//             'type' => array(
-//                 'application/pdf',
-//             ),
+// $cmb_group->add_field(array(
+//         'name' => esc_html__('Tanggal Akta', 'text-domain'),
+//         'id'   => 'tanggal_akta',
+//         'type' => 'text_date',
+//     ));
+
+//  $cmb->add_field(array(
+//         'name'    => __('Jenis Akta', 'cmb2'),
+//         'desc'    => __('', 'cmb2'),
+//         'id'      => $prefix . 'jenis_akta',
+//         'type'    => 'select',
+//         'options' => array(
+//             'Pilih Opsi' => __('Pilih Opsi', 'cmb2'),
+//             'Skmht' => __('Skmht', 'cmb2'),
+//             'Apht'  => __('Apht', 'cmb2'),
+//             'Fidusia' => __('Fidusia', 'cmb2'),
+//             'Jual beli' => __('Jual beli', 'cmb2'),
+//             'Hibah' => __('Hibah', 'cmb2'),
+//             'Turun waris' => __('Turun waris', 'cmb2'),
+//             'Aphb' => __('Aphb', 'cmb2'),
+//             'Pendirian PT' => __('Pendirian PT', 'cmb2'),
+//             'Pendirian CV' => __('Pendirian CV', 'cmb2'),
+//             'Pendirian yayasan' => __('Pendirian yayasan', 'cmb2'),
+//             'Pendirian PT perorangan' => __('Pendirian PT perorangan', 'cmb2'),
+//             'Pendirian akta cabang' => __('Pendirian akta cabang', 'cmb2'),
+//             'Perubahan PT' => __('Perubahan PT', 'cmb2'),
+//             'Perub CV' => __('Perub CV', 'cmb2'),
+//             'Perub Yayasan' => __('Perub Yayasan', 'cmb2'),
+//             'Pecah sertifikat' => __('Pecah sertifikat', 'cmb2'),
+//             'Pengeringan' => __('Pengeringan', 'cmb2'),
+//             'PBG' => __('PBG', 'cmb2'),
+//             'Peningkatan Hak' => __('Peningkatan Hak', 'cmb2'),
+//         )
+//     ));
+
+// Field Nama Penghadap
+// $cmb->add_field(array(
+//     'name' => 'Nama Penghadap',
+//     'id'   => $prefix . 'nama_penghadap_akta',
+//     'type' => 'textarea_small',
+// ));
+
+// $cmb_group->add_field(array(
+//     'name' => esc_html__('Upload Dokumen', 'text-domain'),
+//     'id'   => 'dokumen_akta',
+//     'type' => 'file',
+//     'query_args' => array(
+//         'type' => array(
+//             'application/pdf',
+//             'size' => 10485760, // Set maximum file size (10 MB in bytes)
+//             'preview_size' => 'thumbnail',
 //         ),
-//     ));
+//     ),
+// ));
+
+
 // }
 
 
@@ -449,9 +558,13 @@ add_action('cmb2_after_form', function () {
                 if (kategori === 'Bank') {
                     // Show the bank field if 'Bank' is selected
                     $('#_customer_data_bank').closest('.cmb-row').show();
+                    $('#_customer_data_pekerjan_2').closest('.cmb-row').hide();
+                    $('#_customer_data_pekerjaan_lainnya').closest('.cmb-row').hide();
                 } else {
                     // Hide the bank field if any other option is selected
                     $('#_customer_data_bank').closest('.cmb-row').hide();
+                    $('#_customer_data_pekerjan_2').closest('.cmb-row').show();
+                    $('#_customer_data_pekerjaan_lainnya').closest('.cmb-row').show();
                 }
             }
 

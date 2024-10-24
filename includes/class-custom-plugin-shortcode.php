@@ -63,6 +63,16 @@ class Custom_Plugin_Shortcode
                 'autocomplete' => '',
             ),
         ));
+        // PIC
+        $cmb_user->add_field(array(
+            'name'    => 'Nama PIC',
+            'id'      => 'pic_staff',
+            'type'    => 'text',
+            'column'  => true,
+            'attributes' => array(
+                'required' => 'required', // Tambahkan atribut required
+            ),
+        ));
 
         // PHOBE
         $cmb_user->add_field(array(
@@ -100,6 +110,21 @@ class Custom_Plugin_Shortcode
                 'editor'        => 'Editor',
             ),
             'default' => 'subscriber',
+        ));
+
+         // Alamat
+         $cmb_user->add_field(array(
+            'name'    => 'Jabatan',
+            'id'      => 'jabatan_staff',
+            'type'    => 'select',
+            'default' => $user_role,
+            'options' => array(
+                'staff' => 'Staff',
+                'keuangan'  => 'Keuangan',
+                'administrator' => 'Supervisor',
+                'editor'        => 'Manajer',
+            ),
+            'default' => 'staff',
         ));
 
         // Alamat

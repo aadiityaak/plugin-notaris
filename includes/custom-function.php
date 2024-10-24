@@ -541,9 +541,8 @@ function jobdesk_shortcode($atts)
         'post_type' => 'job_desk',
         'posts_per_page' => $atts['posts_per_page'],
         'paged' => $atts['paged'],
-        'orderby' => 'meta_value',
-        'order' => 'ASC',
-        'meta_key' => 'job_desk_start',
+        'orderby' => 'date',
+        'order' => 'DESC',
         'paged' => $paged,
         'posts_per_page' => $post_per_page,
     );
@@ -595,7 +594,14 @@ function jobdesk_shortcode($atts)
                         <div class="col-md-6">
                             <p class="card-text">
                                 <b>Tanggal Order: </b>
-                                <?php echo convertDateFormat(get_post_meta($get_post_id, 'tanggal_order', true)); ?>
+                                <?php
+                                $tanggal_order = get_post_meta($get_post_id, 'tanggal_order', true);
+                                if (!empty($tanggal_order)) {
+                                    echo convertDateFormat($tanggal_order);
+                                } else {
+                                    echo '- <small><i>(Tanggal belum diatur)</i></small>';
+                                }
+                                ?>
                                 <br>
                                 <b>ID Order: </b>
                                 <?php echo get_the_title($get_post_id); ?>
