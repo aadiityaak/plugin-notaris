@@ -789,30 +789,32 @@ function pagination_bootstrap($total_items, $items_per_page = 10)
     // Menghindari halaman yang tidak valid
     $current_page = max(1, min($current_page, $total_pages));
 
-    echo '<nav aria-label="Page navigation">';
-    echo '<ul class="pagination justify-content-center">';
+    if ($total_pages > 1) {
+        echo '<nav aria-label="Page navigation">';
+        echo '<ul class="pagination justify-content-center">';
 
-    // Link Previous
-    if ($current_page > 1) {
-        echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . ($current_page - 1) . '&status_post=' . $status_post . '">&laquo; Previous</a></li>';
-    }
-
-    // Link untuk setiap halaman
-    for ($i = 1; $i <= $total_pages; $i++) {
-        if ($i == $current_page) {
-            echo '<li class="page-item active"><span class="page-link bg-blue text-white border-0">' . $i . '</span></li>';
-        } else {
-            echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . $i . '&status_post=' . $status_post . '">' . $i . '</a></li>';
+        // Link Previous
+        if ($current_page > 1) {
+            echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . ($current_page - 1) . '&status_post=' . $status_post . '">&laquo; Previous</a></li>';
         }
-    }
 
-    // Link Next
-    if ($current_page < $total_pages) {
-        echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . ($current_page + 1) . '&status_post=' . $status_post . '">Next &raquo;</a></li>';
-    }
+        // Link untuk setiap halaman
+        for ($i = 1; $i <= $total_pages; $i++) {
+            if ($i == $current_page) {
+                echo '<li class="page-item active"><span class="page-link bg-blue text-white border-0">' . $i . '</span></li>';
+            } else {
+                echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . $i . '&status_post=' . $status_post . '">' . $i . '</a></li>';
+            }
+        }
 
-    echo '</ul>';
-    echo '</nav>';
+        // Link Next
+        if ($current_page < $total_pages) {
+            echo '<li class="page-item"><a class="page-link bg-light border-0" href="?halaman=' . ($current_page + 1) . '&status_post=' . $status_post . '">Next &raquo;</a></li>';
+        }
+
+        echo '</ul>';
+        echo '</nav>';
+    }
 }
 
 add_action('wp_ajax_update_post_status', 'update_post_status_callback');
