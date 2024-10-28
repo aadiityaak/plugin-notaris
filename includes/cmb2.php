@@ -446,7 +446,7 @@ function dokumen_metabox_metabox()
 {
     $user_id = $_GET['user_id'] ?? '';
     $prefix = '';
-    $post_id = $_GET['post_id'] ?? '';
+    $draft_kerja_id = $_GET['draft_kerja_id'] ?? '';
 
     // Buat metabox
     $cmb_group = new_cmb2_box(array(
@@ -461,10 +461,43 @@ function dokumen_metabox_metabox()
         'id'   => 'id_order',
         'type' => 'hidden',
         'post_type' => 'draft_kerja',
-        'default' => $post_id,
+        'default' => $draft_kerja_id,
         // 'attributes' => array('type' => 'format-rupiah form-control'),
     ));
 
+    // Field nomor
+    $cmb_group->add_field(array(
+        'name'       => esc_html__('Nomor', 'text-domain'),
+        'id'         =>  'nomor',
+        'type'       => 'text',
+        'attributes' => array(
+            'type' => 'number',
+            'min'  => 1,
+        ),
+    ));
+
+    // Field Tanggal Akta
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Tanggal', 'text-domain'),
+        'id'   => 'tanggal_akta',
+        'type' => 'text_date',
+    ));
+
+    // Jenis Akta
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Jenis', 'text-domain'),
+        'id'   => 'jenis_akta',
+        'type' => 'text',
+    ));
+
+    // Nama Penghadap
+    $cmb_group->add_field(array(
+        'name' => esc_html__('Penghadap', 'text-domain'),
+        'id'   => 'nama_penghadap',
+        'type' => 'textarea',
+    ));
+
+    // Field Upload Dokumen
     $cmb_group->add_field(array(
         'name' => esc_html__('Upload Dokumen', 'text-domain'),
         'id'   => 'pdf',

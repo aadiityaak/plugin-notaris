@@ -436,7 +436,8 @@ function draft_kerja_shortcode()
     $current_user = wp_get_current_user();
     $status_post = $_GET['status_post'] ?? 'aktif';
     $class_aktif = $status_post == 'aktif' ? 'btn-success' : 'btn-secondary';
-    $class_archive = $status_post == 'archive' ? 'btn-success' : 'btn-secondary';
+    $class_archive = $status_post == 'arsip' ? 'btn-success' : 'btn-secondary';
+    $class_selesai = $status_post == 'selesai' ? 'btn-success' : 'btn-secondary';
     // Number increament
     $number = 1;
 
@@ -490,7 +491,8 @@ function draft_kerja_shortcode()
                 ?>
                 <div class="d-flex">
                     <a href="?status_post=aktif" type="button" class="btn text-white <?php echo $class_aktif; ?>">Aktif</a>
-                    <a href="?status_post=archive" type="button" class="btn ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
+                    <a href="?status_post=arsip" type="button" class="btn ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
+                    <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
                 </div>
             </div>
         </div>
@@ -511,12 +513,14 @@ function draft_kerja_shortcode()
                     <th class="bg-blue text-white" scope="col">Kategori</th>
                     <th class="bg-blue text-white" scope="col">Keterangan</th>
                     <th class="bg-blue text-white" scope="col">Petugas</th>
-                    <th class="bg-blue text-white text-end" scope="col">Action</th>
+                    <?php if ($status_post != 'selesai'): ?>
+                        <th class="bg-blue text-white text-end" scope="col">Action</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
                 <?php
-
+                $status_post = isset($_GET['status_post']) ? $_GET['status_post'] : 'aktif';
                 $args = array(
                     'post_type' => 'draft_kerja',
                     'paged' => $paged,
@@ -526,6 +530,28 @@ function draft_kerja_shortcode()
                         'relation' => 'AND',
                     )
                 );
+
+                if ($status_post == 'arsip') {
+                    $args['meta_query'][] = array(
+                        'key' => 'job_desk_status',
+                        'value' => 'arsip',
+                        'compare' => '='
+                    );
+                } elseif ($status_post == 'selesai') {
+                    $args['meta_query'][] = array(
+                        'key' => 'job_desk_status',
+                        'value' => 'selesai',
+                        'compare' => '='
+                    );
+                } else {
+                    $args['meta_query'][] = array(
+                        'key' => 'job_desk_status',
+                        'value' => array('arsip', 'selesai'),
+                        'compare' => 'NOT IN'
+                    );
+                }
+
+
 
                 // Tambahkan kondisi untuk 'konsumen' jika tersedia
                 if (isset($_GET['konsumen'])) {
@@ -551,6 +577,20 @@ function draft_kerja_shortcode()
                             'order-by'       => 'date',
                             'order'          => 'DESC',
                         ));
+
+                        $dokumen = get_posts(array(
+                            'post_type' => 'dokumen',
+                            'post_status' => 'publish',
+                            'posts_per_page' => -1,
+                            'meta_query' => array(
+                                array(
+                                    'key' => 'id_order',
+                                    'value' => $post->ID,
+                                    'compare' => '='
+                                )
+                            )
+                        ));
+
                         // Menghitung total job_desk posts
                         $total_job_desk_posts = count($job_desk_posts);
 
@@ -564,24 +604,21 @@ function draft_kerja_shortcode()
                         }
                         if ($total_job_desk_posts > 0 && $total_job_desk_posts == count($selesai)) {
                             $progres = '<span class="badge bg-success">Selesai</span>';
-                            $class_aktif = 'd-block';
-                            $class_archive = 'd-none';
+                            update_post_meta($post->ID, 'job_desk_status', 'arsip');
                             // skip the rest of the loop
-                            if ($status_post == 'aktif') {
-                                continue;
+                            echo count($dokumen);
+                            if (count($dokumen) > 0) {
+                                update_post_meta($post->ID, 'job_desk_status', 'selesai');
                             }
                         } else {
-                            $class_aktif = 'd-none';
-                            $class_archive = 'd-block';
+                            update_post_meta($post->ID, 'job_desk_status', 'aktif');
                             $progres = '<span data-bs-toggle="tooltip" data-bs-title="' . count($selesai) . '/' . $total_job_desk_posts . '" class="badge bg-warning">Dalam Proses</span>';
-                            if ($status_post == 'archive') {
-                                continue;
-                            }
                         }
                 ?>
                         <tr>
                             <!-- Nomor -->
-                            <td><?php echo $number++; ?></td>
+                            <td><?php echo $number++;
+                                echo get_post_meta($post->ID, 'job_desk_status', true); ?></td>
                             <td style="width: 140px">
                                 <a href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
@@ -690,93 +727,89 @@ function draft_kerja_shortcode()
                                     ?>
                                 </small>
                             </td>
-                            <td class="text-end">
-                                <div class="d-flex justify-content-end">
-                                    <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
-                                            <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
-                                            <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
-                                            <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
-                                        </svg>
-                                    </a>
-                                    <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
-                                        <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                            <?php if ($status_post != 'selesai'): ?>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end">
+                                        <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
+                                                <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
+                                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
                                             </svg>
-                                        </span>
-                                        <span class="<?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-cloud-arrow-up" viewBox="0 0 16 16">
-                                                <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z" />
-                                                <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                                        </a>
+                                        <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
+                                            <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?draft_kerja_id=<?php echo $post->ID; ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                                                <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
+                                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
                                             </svg>
-                                        </span>
-                                    </a>
-                                    <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?post_id=<?php echo $post->ID; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
-                                            <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
-                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                                        </svg>
-                                    </a>
-                                    <!-- Button trigger modal -->
-                                    <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                        <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Jobdesk">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
-                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                                            </svg>
-                                        </span>
-                                    </a>
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="view-post-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-                                        <?php
-                                        $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
-                                        $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
-                                        $layanan_order = get_post_meta($post->ID, 'layanan', true) ?: '';
-                                        $customer = get_post_meta($post->ID, 'customer_select', true);
-                                        $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
-                                        $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
-                                        $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
-                                        $harga_real = get_post_meta($post->ID, 'harga_real', true);
-                                        $harga_kesepakatan = get_post_meta($post->ID, 'harga_kesepakatan', true);
-                                        $alamat = get_post_meta($customer, '_customer_data_alamat', true);
-                                        ?>
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="viewModalLabel"><?php echo '#' . $post->post_title; ?></h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="row">
-                                                        <div class="col-md-12 text-start">
-                                                            <ul class="list-group">
-                                                                <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
-                                                                <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
-                                                                <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
-                                                                <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
-                                                                <li class="list-group-item"><b>Biaya Transaksi : </b> <?php echo $biaya_transaksi; ?></li>
-                                                                <li class="list-group-item"><b>Harga Real : </b> <?php echo $harga_real; ?></li>
-                                                                <li class="list-group-item"><b>Harga Kesepakatan : </b> <?php echo $harga_kesepakatan; ?></li>
-                                                                <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
-                                                            </ul>
-                                                        </div>
-                                                        <div class="col-md-12">
+                                        </a>
+                                        <!-- Button trigger modal -->
+                                        <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Jobdesk">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="view-post-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                                            <?php
+                                            $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
+                                            $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
+                                            $layanan_order = get_post_meta($post->ID, 'layanan', true) ?: '';
+                                            $customer = get_post_meta($post->ID, 'customer_select', true);
+                                            $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
+                                            $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
+                                            $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                            $harga_real = get_post_meta($post->ID, 'harga_real', true);
+                                            $harga_kesepakatan = get_post_meta($post->ID, 'harga_kesepakatan', true);
+                                            $alamat = get_post_meta($customer, '_customer_data_alamat', true);
+                                            ?>
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="viewModalLabel"><?php echo '#' . $post->post_title; ?></h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-start">
+                                                                <ul class="list-group">
+                                                                    <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
+                                                                    <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
+                                                                    <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
+                                                                    <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
+                                                                    <li class="list-group-item"><b>Biaya Transaksi : </b> <?php echo $biaya_transaksi; ?></li>
+                                                                    <li class="list-group-item"><b>Harga Real : </b> <?php echo $harga_real; ?></li>
+                                                                    <li class="list-group-item"><b>Harga Kesepakatan : </b> <?php echo $harga_kesepakatan; ?></li>
+                                                                    <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="col-md-12">
 
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <a class="btn btn-danger btn-sm btn-danger text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                            </svg>
+                                        </a>
                                     </div>
-                                    <a class="btn btn-danger btn-sm btn-danger text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </td>
+                                </td>
+                            <?php endif; ?>
                         </tr>
                     <?php
                     endwhile;
@@ -784,7 +817,7 @@ function draft_kerja_shortcode()
                 else :
                     ?>
                     <tr>
-                        <td colspan="8">Tidak ada Order yang ditemukan</td>
+                        <td colspan="11">Tidak ada Order yang ditemukan</td>
                     </tr>
                 <?php
                 endif;

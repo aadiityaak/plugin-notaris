@@ -834,3 +834,96 @@ function update_post_status_callback()
         wp_send_json_error('Post ID tidak valid.');
     }
 }
+
+// Fungsi untuk menampilkan tabel dokumen
+function tampilkan_tabel_dokumen()
+{
+    global $post;
+
+    // Awal buffer output
+    ob_start();
+    $draft_kerja_id = isset($_GET['draft_kerja_id']) ? $_GET['draft_kerja_id'] : '';
+
+    $args = array(
+        'post_type' => 'dokumen',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'meta_query' => array(
+            array(
+                'key' => 'id_order',
+                'value' => $draft_kerja_id,
+                'compare' => '='
+            )
+        )
+    );
+
+    $query = new WP_Query($args);
+?>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="text-white table-secondary" style="background-color: #2994F2;">
+                <tr>
+                    <th scope="col">Nomor</th>
+                    <th scope="col">Tanggal Akta</th>
+                    <th scope="col">Jenis Akta</th>
+                    <th scope="col">Nama Penghadap</th>
+                    <th scope="col">Lihat Dokumen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+
+                        // Ambil data dari metabox
+                        $nomor = get_post_meta($post->ID, 'nomor', true);
+                        $tanggal_akta = get_post_meta($post->ID, 'tanggal_akta', true);
+                        $jenis_akta = get_post_meta($post->ID, 'jenis_akta', true);
+                        $nama_penghadap = get_post_meta($post->ID, 'nama_penghadap', true);
+                        $pdf_url = get_post_meta($post->ID, 'pdf', true);
+                        // Tampilkan tabel dengan gaya Bootstrap 5
+                ?>
+
+                        <tr>
+                            <td><?php echo esc_html($nomor); ?></td>
+                            <td><?php echo esc_html($tanggal_akta); ?></td>
+                            <td><?php echo esc_html($jenis_akta); ?></td>
+                            <td><?php echo esc_html($nama_penghadap); ?></td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example dokumen">
+                                    <!-- Edit dokumen -->
+                                    <a href="?kelola-dokumen/?draft_kerja_id=<?php echo $draft_kerja_id; ?>&post_id=<?php echo $post->ID; ?>" target="_blank" class="btn btn-primary text-white btn-sm"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                        </svg> Edit
+                                    </a>
+                                    <?php if ($pdf_url): ?>
+                                        <a href="<?php echo esc_url($pdf_url); ?>" target="_blank" class="btn btn-danger text-white btn-sm"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
+                                                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                            </svg> Unduh</a>
+                                    <?php else: ?>
+                                        <span class="text-muted">Tidak ada dokumen</span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+
+                <?php
+
+                    }
+                } else {
+                    echo '<tr><td colspan="5">Tidak ada dokumen yang tersedia.</td></tr>';
+                } ?>
+            </tbody>
+        </table>
+    </div>
+<?php
+
+    // Dapatkan output dari buffer
+    return ob_get_clean();
+}
+
+// Daftarkan shortcode
+add_shortcode('tabel-dokumen', 'tampilkan_tabel_dokumen');
