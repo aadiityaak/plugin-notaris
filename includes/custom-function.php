@@ -836,13 +836,19 @@ function update_post_status_callback()
 }
 
 // Fungsi untuk menampilkan tabel dokumen
-function tampilkan_tabel_dokumen()
+// [tabel-dokumen draft_kerja_id="1"]
+function tampilkan_tabel_dokumen($atts)
 {
+    $a = shortcode_atts(array(
+        'draft_kerja_id' => ''
+    ), $atts);
+    $attr_draft_kerja_id = isset($a['draft_kerja_id']) ? $a['draft_kerja_id'] : '';
+    $get_draft_kerja_id = isset($_GET['draft_kerja_id']) ? $_GET['draft_kerja_id'] : '';
+    $draft_kerja_id =  $attr_draft_kerja_id ?? $get_draft_kerja_id;
     global $post;
 
     // Awal buffer output
     ob_start();
-    $draft_kerja_id = isset($_GET['draft_kerja_id']) ? $_GET['draft_kerja_id'] : '';
 
     $args = array(
         'post_type' => 'dokumen',
@@ -863,11 +869,11 @@ function tampilkan_tabel_dokumen()
         <table class="table table-bordered">
             <thead class="text-white table-secondary" style="background-color: #2994F2;">
                 <tr>
-                    <th scope="col">Nomor</th>
-                    <th scope="col">Tanggal Akta</th>
-                    <th scope="col">Jenis Akta</th>
-                    <th scope="col">Nama Penghadap</th>
-                    <th scope="col">Lihat Dokumen</th>
+                    <th scope="col" style="white-space: nowrap;">Nomor Akta</th>
+                    <th scope="col" style="white-space: nowrap;">Tanggal Akta</th>
+                    <th scope="col" style="white-space: nowrap;">Jenis Akta</th>
+                    <th scope="col" style="white-space: nowrap;">Nama Penghadap</th>
+                    <th scope="col" style="white-space: nowrap;">Lihat Dokumen</th>
                 </tr>
             </thead>
             <tbody>
@@ -877,7 +883,7 @@ function tampilkan_tabel_dokumen()
                         $query->the_post();
 
                         // Ambil data dari metabox
-                        $nomor = get_post_meta($post->ID, 'nomor', true);
+                        $nomor = get_post_meta($post->ID, 'nomor_akta', true);
                         $tanggal_akta = get_post_meta($post->ID, 'tanggal_akta', true);
                         $jenis_akta = get_post_meta($post->ID, 'jenis_akta', true);
                         $nama_penghadap = get_post_meta($post->ID, 'nama_penghadap', true);
@@ -886,19 +892,22 @@ function tampilkan_tabel_dokumen()
                 ?>
 
                         <tr>
-                            <td><?php echo esc_html($nomor); ?></td>
-                            <td><?php echo esc_html($tanggal_akta); ?></td>
-                            <td><?php echo esc_html($jenis_akta); ?></td>
-                            <td><?php echo esc_html($nama_penghadap); ?></td>
+                            <td><?php echo $nomor ? esc_html($nomor) : '-'; ?></td>
+                            <td><?php echo $tanggal_akta ? esc_html($tanggal_akta) : '-'; ?></td>
+                            <td><?php echo $jenis_akta ? esc_html($jenis_akta) : '-'; ?></td>
+                            <td><?php echo $nama_penghadap ? esc_html($nama_penghadap) : '-'; ?></td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic example dokumen">
                                     <!-- Edit dokumen -->
-                                    <a href="?kelola-dokumen/?draft_kerja_id=<?php echo $draft_kerja_id; ?>&post_id=<?php echo $post->ID; ?>" target="_blank" class="btn btn-primary text-white btn-sm"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                        </svg> Edit
-                                    </a>
-                                    <?php if ($pdf_url): ?>
+                                    <?php if (!$attr_draft_kerja_id) {
+                                    ?>
+                                        <a href="?kelola-dokumen/?draft_kerja_id=<?php echo $draft_kerja_id; ?>&post_id=<?php echo $post->ID; ?>" target="_blank" class="btn btn-primary text-white btn-sm"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                            </svg> Edit
+                                        </a>
+                                    <?php }
+                                    if ($pdf_url): ?>
                                         <a href="<?php echo esc_url($pdf_url); ?>" target="_blank" class="btn btn-danger text-white btn-sm"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-file-earmark-arrow-down" viewBox="0 0 16 16">
                                                 <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293z" />
                                                 <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />

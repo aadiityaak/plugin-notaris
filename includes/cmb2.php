@@ -467,8 +467,8 @@ function dokumen_metabox_metabox()
 
     // Field nomor
     $cmb_group->add_field(array(
-        'name'       => esc_html__('Nomor', 'text-domain'),
-        'id'         =>  'nomor',
+        'name'       => esc_html__('Nomor Akta', 'text-domain'),
+        'id'         =>  'nomor_akta',
         'type'       => 'text',
         'attributes' => array(
             'type' => 'number',
@@ -478,21 +478,21 @@ function dokumen_metabox_metabox()
 
     // Field Tanggal Akta
     $cmb_group->add_field(array(
-        'name' => esc_html__('Tanggal', 'text-domain'),
+        'name' => esc_html__('Tanggal Akta', 'text-domain'),
         'id'   => 'tanggal_akta',
         'type' => 'text_date',
     ));
 
     // Jenis Akta
     $cmb_group->add_field(array(
-        'name' => esc_html__('Jenis', 'text-domain'),
+        'name' => esc_html__('Jenis Akta', 'text-domain'),
         'id'   => 'jenis_akta',
         'type' => 'text',
     ));
 
     // Nama Penghadap
     $cmb_group->add_field(array(
-        'name' => esc_html__('Penghadap', 'text-domain'),
+        'name' => esc_html__('Nama Penghadap', 'text-domain'),
         'id'   => 'nama_penghadap',
         'type' => 'textarea',
     ));
