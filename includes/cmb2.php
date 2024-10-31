@@ -13,6 +13,13 @@ function pekerjaan_metabox_metabox()
         'object_types'  => array('draft_kerja'), // Ganti 'post' dengan jenis postingan yang Anda inginkan
     ));
 
+    $cmb_group->add_field(array(
+        'name'             => 'Default',
+        'id'               => 'job_desk_status',
+        'type'             => 'hidden',
+        'default'          => 'aktif',
+    ));
+
     // Field Pilihan Pelanggan
     $cmb_group->add_field(array(
         'name'             => 'Pilih Konsumen',
@@ -26,6 +33,7 @@ function pekerjaan_metabox_metabox()
         'name'             => 'Tanggal Order',
         'id'               => $prefix . 'tanggal_order',
         'type'             => 'text_date',
+        'attributes' => array('autocomplete' => 'off'),
     ));
     $cmb_group->add_field(array(
         'name'             => 'Layanan',
@@ -33,7 +41,7 @@ function pekerjaan_metabox_metabox()
         'type'             => 'text',
     ));
     $cmb_group->add_field(array(
-        'name'             => 'Biaya Transaksi',
+        'name'             => 'Biaya Notaris',
         'id'               => $prefix . 'biaya_transaksi',
         'type'             => 'text',
         'attributes' => array('class' => 'format-rupiah form-control'),

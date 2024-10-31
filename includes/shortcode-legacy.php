@@ -303,21 +303,21 @@ function display_user_list()
             echo '<td>' . get_user_meta($user_id, 'status', true) . '</td>';
             if (current_user_can('administrator')) {
             ?>
-                <td class="text-end">
+                <td class="text-end d-flex justify-content-end">
                     <!-- Modal -->
-                    <a href="?type=staff&user_id=<?php echo $user_id; ?>" class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="tooltip" data-bs-title="Edit">
+                    <a href="?type=staff&user_id=<?php echo $user_id; ?>" class="btn btn-primary btn-sm text-white tooltips ms-1" data-bs-toggle="tooltip" data-bs-title="Edit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
                             <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
                         </svg>
                     </a>
                     <!-- Modal -->
-                    <a class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="modal" data-bs-target="#profilModal<?php echo $user_id; ?>">
+                    <a class="btn btn-primary btn-sm text-white tooltips ms-1" data-bs-toggle="modal" data-bs-target="#profilModal<?php echo $user_id; ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
                             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
                             <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
                         </svg>
                     </a>
-                    <button type="button" class="btn btn-danger btn-sm text-white" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal<?php echo $user_id; ?>">
+                    <button type="button" class="btn btn-danger btn-sm text-white ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal<?php echo $user_id; ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="color: #ffffff;" fill="white" class="bi bi-trash3" viewBox="0 0 16 16">
                             <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
                         </svg>
@@ -439,7 +439,9 @@ function draft_kerja_shortcode()
     $class_archive = $status_post == 'arsip' ? 'btn-success' : 'btn-secondary';
     $class_selesai = $status_post == 'selesai' ? 'btn-success' : 'btn-secondary';
     // Number increament
-    $number = 1;
+    $number = ($paged - 1) * $post_per_page;
+    $number = $number + 1;
+    $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
 
     // Cetak peran pengguna yang saat ini masuk
     // echo 'Peran pengguna saat ini: ' . implode( ', ', $current_user->roles );
@@ -448,24 +450,25 @@ function draft_kerja_shortcode()
     }
 
     ?>
-    <div class="table-responsive m-3">
-        <div class="mb-2 row mx-0">
-            <div class="col-sm-2 px-0">
-                <a class="btn btn-success text-white d-block me-2" href="<?php echo get_site_url(); ?>/kelola-konsumen/">Tambah Order</a>
-            </div>
-            <div class="col-sm-3 px-0 d-flex">
-                <!-- search form -->
-                <form action="?" method="get" class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search no order" aria-label="Search" value="<?php echo $s; ?>" name="filter">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-            <div class="col-sm-7 text-sm-end text-right">
+    <!-- <div class="table-responsive m-3"> -->
+    <div class="mb-2 row mx-0">
+        <div class="col-sm-2 px-0">
+            <a class="btn btn-success text-white d-block me-2" href="<?php echo get_site_url(); ?>/kelola-konsumen/">Tambah Order</a>
+        </div>
+        <div class="col-sm-3 d-md-flex my-3 my-md-0 px-2">
+            <!-- search form -->
+            <form action="?" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Cari no order" aria-label="Cari" value="<?php echo $s; ?>" name="filter">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="col-sm-7 d-flex justify-content-between text-sm-end text-right">
+            <div class="d-flex justify-content-start align-items-center">
                 <?php
                 $konsumen = $_GET['konsumen'] ?? '';
                 $get_kategori = $_GET['kategori'] ?? '';
                 if ($konsumen) {
-                    echo '<b>Filter:</b> Tampilkan data dari <b>' . get_post_meta($konsumen, '_customer_data_nama_lengkap', true) . '</b>';
+                    echo '<b>Filter:</b> Tampilkan data dari <b class="mx-2">' . get_post_meta($konsumen, '_customer_data_nama_lengkap', true) . '</b>';
                     echo '<a href="?">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -489,13 +492,15 @@ function draft_kerja_shortcode()
                     }
                 }
                 ?>
-                <div class="d-flex">
-                    <a href="?status_post=aktif" type="button" class="btn text-white <?php echo $class_aktif; ?>">Aktif</a>
-                    <a href="?status_post=arsip" type="button" class="btn ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
-                    <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
-                </div>
+            </div>
+            <div class="d-flex">
+                <a href="?status_post=aktif" type="button" class="btn text-white <?php echo $class_aktif; ?>">Aktif</a>
+                <a href="?status_post=arsip" type="button" class="btn ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
+                <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
             </div>
         </div>
+    </div>
+    <div class="table-responsive m-3">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -505,8 +510,8 @@ function draft_kerja_shortcode()
                     <th class="bg-blue text-white" scope="col">Pelanggan</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 140px;">Pembayaran</th>
                     <!-- Sembunyikan biaya hanya tampil pada admin saja selain admin tidak ditampilkan  -->
-                    <!-- Cek apakah pengguna saat ini adalah admin -->
-                    <?php if (current_user_can('administrator')): ?>
+                    <!-- Tampil hanya di admin dan keuangan -->
+                    <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
                         <th class="bg-blue text-white" scope="col">Biaya Notaris</th>
                     <?php endif; ?>
                     <th class="bg-blue text-white" scope="col">Progres</th>
@@ -517,7 +522,7 @@ function draft_kerja_shortcode()
                         <th class="bg-blue text-white text-end" scope="col">Action</th>
                     <?php endif; ?>
                     <?php if ($status_post == 'selesai'): ?>
-                        <th class="bg-blue text-white text-end" scope="col">Lihat Data</th>
+                        <th class="bg-blue text-white text-end" style="white-space: nowrap;" scope="col">Lihat Data</th>
                     <?php endif; ?>
                 </tr>
             </thead>
@@ -528,6 +533,7 @@ function draft_kerja_shortcode()
                     'post_type' => 'draft_kerja',
                     'paged' => $paged,
                     'posts_per_page' => $post_per_page,
+                    'order' => 'ASC',
                     's' => $s,
                     'meta_query' => array(
                         'relation' => 'AND',
@@ -609,7 +615,6 @@ function draft_kerja_shortcode()
                             $progres = '<span class="badge bg-success">Selesai</span>';
                             update_post_meta($post->ID, 'job_desk_status', 'arsip');
                             // skip the rest of the loop
-                            echo count($dokumen);
                             if (count($dokumen) > 0) {
                                 update_post_meta($post->ID, 'job_desk_status', 'selesai');
                             }
@@ -622,7 +627,7 @@ function draft_kerja_shortcode()
                             <!-- Nomor -->
                             <td><?php echo $number++; ?></td>
                             <td style="width: 140px">
-                                <a href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                <a href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>" class="flex">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
                                         <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
                                         <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
@@ -633,7 +638,15 @@ function draft_kerja_shortcode()
                             <td>
                                 <?php
                                 $tgl = get_post_meta($post->ID, 'tanggal_order', true);
-                                echo $tgl ? date("d m Y", strtotime($tgl)) : '';
+                                $awal = new DateTime($tgl);
+                                $akhir = new DateTime(date('U'));
+
+                                // Menghitung selisih hari
+                                $selisih = $awal->diff($akhir);
+                                $hari = $selisih->d . ' hari';
+                                $warna = ($selisih->d >= 30) ? 'danger' : ($selisih->d >= 10 ? 'warning' : 'success');
+
+                                echo $tgl ? '<span data-bs-toggle="tooltip" data-bs-title="' . $hari . '" class="badge bg-' . $warna . '">' . date("d m Y", strtotime($tgl)) . '</span>' : '';
                                 ?>
                             </td>
                             <td style="max-width: 200ox;">
@@ -668,31 +681,33 @@ function draft_kerja_shortcode()
                                 }
                                 ?>
                             </td>
-                            <td style="min-width:150px;">
-                                <?php
-                                if (isset($post)) {
-                                    $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
-                                    $biaya_transfer = get_post_meta($post->ID, 'biaya_transfer', true);
-                                    $dibayar = get_post_meta($post->ID, 'dibayar', true);
+                            <?php if (current_user_can('administrator')): ?>
+                                <td style="min-width:150px;">
+                                    <?php
+                                    if (isset($post)) {
+                                        $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                        $biaya_transfer = get_post_meta($post->ID, 'biaya_transfer', true);
+                                        $dibayar = get_post_meta($post->ID, 'dibayar', true);
 
-                                    // Jika nilai kosong atau tidak valid, set ke 0
-                                    $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
-                                    $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
-                                    $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
+                                        // Jika nilai kosong atau tidak valid, set ke 0
+                                        $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
+                                        $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
+                                        $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
 
-                                    $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
+                                        $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
 
-                                    // Format output
-                                    $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start"
+                                        // Format output
+                                        $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start"
         title="Dibayar Rp. ' . number_format($dibayar, 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format(($total_biaya - $dibayar), 2, ',', '.') . '</b>">Rp. ' . number_format($total_biaya, 2, ',', '.') . '</a>' : '';
-                                    $kurang = ($dibayar && $total_biaya) ? 'Rp. ' . number_format(($total_biaya - $dibayar), 2, ',', '.') : '';
-                                    echo $formatted_total_biaya;
-                                    // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
-                                } else {
-                                    echo 'Post tidak ditemukan.';
-                                }
-                                ?>
-                            </td>
+                                        $kurang = ($dibayar && $total_biaya) ? 'Rp. ' . number_format(($total_biaya - $dibayar), 2, ',', '.') : '';
+                                        echo $formatted_total_biaya;
+                                        // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
+                                    } else {
+                                        echo 'Post tidak ditemukan.';
+                                    }
+                                    ?>
+                                </td>
+                            <?php endif; ?>
                             <td>
                                 <?php
                                 echo $progres;
@@ -732,27 +747,32 @@ function draft_kerja_shortcode()
                             <?php if ($status_post != 'selesai'): ?>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end">
-                                        <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
-                                                <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
-                                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
-                                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
-                                            </svg>
-                                        </a>
-                                        <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
-                                            <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                        <?php if ($status_post == 'aktif'): ?>
+                                            <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
+                                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
+                                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
                                                 </svg>
-                                            </span>
-                                        </a>
-                                        <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?draft_kerja_id=<?php echo $post->ID; ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
-                                                <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
-                                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
-                                            </svg>
-                                        </a>
+                                            </a>
+
+                                            <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
+                                                <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                    </svg>
+                                                </span>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if ($status_post == 'arsip'): ?>
+                                            <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?draft_kerja_id=<?php echo $post->ID; ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                                                    <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
+                                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                                </svg>
+                                            </a>
+                                        <?php endif; ?>
                                         <!-- Button trigger modal -->
                                         <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
                                             <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Jobdesk">
@@ -832,9 +852,13 @@ function draft_kerja_shortcode()
                                         $customer = get_post_meta($post->ID, 'customer_select', true);
                                         $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
                                         $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
-                                        $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
-                                        $harga_real = get_post_meta($post->ID, 'harga_real', true);
-                                        $harga_kesepakatan = get_post_meta($post->ID, 'harga_kesepakatan', true);
+                                        $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
+                                        $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
+                                        $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
+                                        $harga_real = preg_replace('/[^0-9]/', '', $harga_real);
+                                        echo $harga_real;
+                                        $harga_kesepakatan = get_post_meta($customer, '_customer_data_harga_kesepakatan', true);
+                                        $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
                                         $alamat = get_post_meta($customer, '_customer_data_alamat', true);
                                         ?>
                                         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -851,7 +875,7 @@ function draft_kerja_shortcode()
                                                             <li class="list-group-item"><b>Order: </b> <?php echo $layanan_order ?: ' -'; ?></li>
                                                             <li class="list-group-item"><b>Nama Customer: </b> <?php echo $nama ?: ' -'; ?></li>
                                                             <li class="list-group-item"><b>Whatsapp: </b> <?php echo $whatsapp ?: ' -'; ?></li>
-                                                            <li class="list-group-item"><b>Biaya Transaksi: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
+                                                            <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
                                                             <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
                                                             <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
                                                             <li class="list-group-item"><b>Alamat: </b> <?php echo $alamat ?: ' -'; ?></li>
@@ -877,28 +901,29 @@ function draft_kerja_shortcode()
                 ?>
             </tbody>
         </table>
-        <?php
-        // echo '<pre>' . print_r($query, 1) . '</pre>';
-        pagination_bootstrap($query->found_posts, $post_per_page);
-        ?>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalPrint" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Tanda Terima</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Loading...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+    </div>
+    <?php
+    // echo '<pre>' . print_r($query, 1) . '</pre>';
+    pagination_bootstrap($query->found_posts, $post_per_page);
+    ?>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalPrint" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Tanda Terima</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Loading...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- </div> -->
 <?php
     return ob_get_clean();
 }
@@ -920,11 +945,20 @@ function data_konsumen()
         return 'Silahkan login sebagai administrator untuk melihat data.';
     }
     global $post;
+    $search = $_GET['search'] ?? '';
+    $hp = $_GET['hp'] ?? '';
 ?>
     <div class="table-responsive">
-        <div class="mb-2">
+        <div class="mb-2 d-flex">
             <a class="btn btn-sm btn-success text-white" href="<?php echo get_site_url(); ?>/kelola-konsumen/">Tambah Konsumen</a>
-            <a class="btn btn-sm btn-success text-white" href="<?php echo get_site_url(); ?>/kelola-kategori/">Kelola Kategori</a>
+            <form action="" method="get" class="d-flex justify-content-end ms-3">
+                <input type="text" name="search" class="form-control form-control-sm d-inline-block" value="<?php echo $search; ?>" placeholder="Nama Konsumen">
+                <button type="submit" class="btn btn-sm btn-primary text-white">Cari</button>
+            </form>
+            <form action="" method="get" class="d-flex justify-content-end ms-3">
+                <input type="text" name="hp" value="<?php echo $hp; ?>" class="form-control form-control-sm d-inline-block" placeholder="No. HP">
+                <button type="submit" class="btn btn-sm btn-primary text-white">Cari</button>
+            </form>
         </div>
         <table class="table table-striped">
             <thead>
@@ -939,11 +973,30 @@ function data_konsumen()
             </thead>
             <tbody>
                 <?php
+
                 $args = array(
                     'post_type' => 'data_pelanggan',
                     'paged' => $paged,
                     'posts_per_page' => $post_per_page,
                 );
+
+                // Jika ada pencarian, tambahkan meta_query
+                if ($search) {
+                    // Jika ingin mencari juga di judul dan konten
+                    $args['s'] = $search;
+                }
+
+                if ($hp) {
+                    $args['meta_query'] = array(
+                        array(
+                            'key' => '_customer_data_whatsapp',
+                            'value' => $hp,
+                            'compare' => 'LIKE',
+                        ),
+                    );
+                }
+
+                // echo '<pre>' . print_r($args, 1) . '</pre>';
                 $query = new WP_Query($args);
 
                 if ($query->have_posts()) :
@@ -979,7 +1032,7 @@ function data_konsumen()
                                 // echo implode(',', $konsumen_kategori);
                                 ?>
                             </td>
-                            <td>
+                            <td class="text-end">
 
                                 <!-- Modal Trigger -->
                                 <a class="btn btn-primary btn-sm text-white tooltips" data-bs-toggle="modal" data-bs-target="#konsumenModal<?php echo $post->ID; ?>">

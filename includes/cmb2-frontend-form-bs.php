@@ -95,6 +95,9 @@ class CMB2_Frontend_Form_Bs
                     $output .= '<script>window.location.href = "' . get_site_url() . '/jobdesk/?post_id=' . $new_id . '";</script>';
                 } else {
                     $output .= '<div class="alert alert-success">Update data berhasil.</div>';
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://";
+                    $full_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                    $output .= '<script>window.location.href = "' . $full_url . '";</script>';
                 }
             }
         }

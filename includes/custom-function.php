@@ -527,6 +527,9 @@ function jobdesk_shortcode($atts)
     ob_start();
     global $post;
     $paged = $_GET['halaman'] ?? '1';
+    $job_desk_status = $_GET['status_post'] ?? '';
+    $search = $_GET['search'] ?? '';
+
     $post_per_page = 20;
     $get_post_id = $_GET['post_id'] ?? '';
 
@@ -544,8 +547,25 @@ function jobdesk_shortcode($atts)
         'orderby' => 'date',
         'order' => 'DESC',
         'paged' => $paged,
+        's' => $search,
         'posts_per_page' => $post_per_page,
     );
+
+    if ($job_desk_status == 'selesai') {
+        $query_args['meta_query'][] = array(
+            'key' => 'job_desk_status',
+            'value' => 'Selesai',
+            'compare' => '='
+        );
+    } else if ($job_desk_status != 'selesai') {
+        $query_args['meta_query'][] = array(
+            'key' => 'job_desk_status',
+            'value' => 'Selesai',
+            'compare' => '!='
+        );
+    }
+    echo $job_desk_status;
+
     // if administrator
     if (!current_user_can('administrator') && empty($get_post_id)) {
         $query_args['meta_key'] = 'job_desk_id_staff';
@@ -564,7 +584,8 @@ function jobdesk_shortcode($atts)
 
         $biaya_transaksi = get_post_meta($get_post_id, 'biaya_transaksi', true);
         $biaya_transfer = get_post_meta($get_post_id, 'biaya_transfer', true);
-        $dibayar = intval(get_post_meta($get_post_id, 'dibayar', true));
+        $dibayar = get_post_meta($get_post_id, 'dibayar', true);
+        $dibayar = preg_replace('/\D/', '', $dibayar);
 
         // Jika nilai kosong atau tidak valid, set ke 0
         $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
@@ -612,7 +633,7 @@ function jobdesk_shortcode($atts)
                             </p>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <b>Biaya Transaksi: </b>
+                            <b>Biaya Notaris: </b>
                             <?php echo $formatted_total_biaya; ?>
                             <br>
                             <b>Dibayar: </b>
@@ -642,7 +663,22 @@ function jobdesk_shortcode($atts)
     }
     // Menampilkan daftar post dalam tabel
     if ($query->have_posts()) {
+
         echo '<div class="container">';
+    ?>
+        <div class="d-flex mb-3">
+            <a href="?status_post=aktif" type="button" class="btn btn-primary text-white ">Aktif</a>
+            <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
+            <!-- Form Pencarian -->
+            <form action="" method="get" class="ms-auto">
+                <div class="input-group">
+                    <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
+                    <input type="text" name="search" class="form-control" placeholder="Cari id..." value="<?php echo $search; ?>">
+                    <button type="submit" class="btn btn-primary text-white">Cari</button>
+                </div>
+            </form>
+        </div>
+    <?php
         echo '<div class="table-responsive">';
         echo '<table class="table table-striped">';
         echo '<thead>';
@@ -660,7 +696,8 @@ function jobdesk_shortcode($atts)
         echo '</thead>';
         echo '<tbody>';
 
-        $count = 1;
+        $count = ($paged - 1) * $post_per_page;
+        $count = $count + 1;
         while ($query->have_posts()) {
             $query->the_post();
             $post_id = $post->ID;
@@ -671,8 +708,8 @@ function jobdesk_shortcode($atts)
             $firt_name = $user_info->first_name ?? '';
             $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
             echo '<tr>';
-            echo '<th scope="row">' . $count . '</th>';
-            echo '<td><a href="?post_id=' . $parent . '">' . get_post_meta($parent, 'layanan', true) . '</a><br><small class="text-muted">ID: ' . get_the_title($parent) . '<small></td>';
+            echo '<th scope="row">' . $count++ . '</th>';
+            echo '<td><a href="?post_id=' . $parent . '">' . get_post_meta($parent, 'layanan', true) . '</a><br><small class="text-muted">ID: ' . get_the_title($post_id) . '<small></td>';
             echo '<td>' . get_post_meta($post_id, 'judul_job_desk', true) . '</td>';
             echo '<td>' . get_post_meta($post_id, 'job_desk_kategori_select', true) . '</td>';
             echo '<td>' . $firt_name . '</td>';
@@ -694,8 +731,6 @@ function jobdesk_shortcode($atts)
             echo '</div>';
             echo '</td>';
             echo '</tr>';
-
-            $count++;
         }
 
         echo '</tbody>';
@@ -844,12 +879,12 @@ function tampilkan_tabel_dokumen($atts)
     ), $atts);
     $attr_draft_kerja_id = isset($a['draft_kerja_id']) ? $a['draft_kerja_id'] : '';
     $get_draft_kerja_id = isset($_GET['draft_kerja_id']) ? $_GET['draft_kerja_id'] : '';
-    $draft_kerja_id =  $attr_draft_kerja_id ?? $get_draft_kerja_id;
+    $draft_kerja_id =  $attr_draft_kerja_id != '' ? $attr_draft_kerja_id : $get_draft_kerja_id;
     global $post;
 
     // Awal buffer output
     ob_start();
-
+    global $post;
     $args = array(
         'post_type' => 'dokumen',
         'post_status' => 'publish',
