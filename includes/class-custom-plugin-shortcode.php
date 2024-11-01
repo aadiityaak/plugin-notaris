@@ -112,8 +112,8 @@ class Custom_Plugin_Shortcode
             'default' => 'subscriber',
         ));
 
-         // Alamat
-         $cmb_user->add_field(array(
+        // Alamat
+        $cmb_user->add_field(array(
             'name'    => 'Jabatan',
             'id'      => 'jabatan_staff',
             'type'    => 'select',
@@ -196,8 +196,9 @@ class Custom_Plugin_Shortcode
                 $output .= '<div class="alert alert-warning">' . $result->get_error_message() . '</div>';
             } else {
                 $output .= '<div class="alert alert-success">User ' . ($user_id ? 'updated' : 'added') . ' successfully with ID: ' . $result . '</div>';
-                wp_safe_redirect('https://asistennotaris.com/data-staff/?type=staff');
-                exit;
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://";
+                $full_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                $output .= '<script>window.location.href = "' . $full_url . '";</script>';
             }
         }
 
