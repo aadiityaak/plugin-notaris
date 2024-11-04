@@ -189,6 +189,7 @@ function register_user_profile_metabox()
 function add_customer_data_metabox()
 {
     $prefix = '_customer_data_';
+    $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
 
     $cmb = new_cmb2_box(array(
         'id'           => 'customer_data_metabox',
@@ -323,45 +324,47 @@ function add_customer_data_metabox()
         'type'    => 'text',
     ));
 
-    $cmb->add_field(array(
-        'name'    => __('Nilai Transaksi', 'cmb2'),
-        'desc'    => __('', 'cmb2'),
-        'id'      => $prefix . 'nilai_transaksi',
-        'type'    => 'text',
-        'attributes' => array('class' => 'format-rupiah form-control'),
-    ));
+    if (current_user_can('administrator') || $jabatan_staff == 'keuangan'):
+        $cmb->add_field(array(
+            'name'    => __('Nilai Transaksi', 'cmb2'),
+            'desc'    => __('', 'cmb2'),
+            'id'      => $prefix . 'nilai_transaksi',
+            'type'    => 'text',
+            'attributes' => array('class' => 'format-rupiah form-control'),
+        ));
 
-    $cmb->add_field(array(
-        'name'    => __('Harga Real', 'cmb2'),
-        'desc'    => __('', 'cmb2'),
-        'id'      => $prefix . 'harga_real',
-        'type'    => 'text',
-        'attributes' => array('class' => 'format-rupiah form-control'),
-    ));
+        $cmb->add_field(array(
+            'name'    => __('Harga Real', 'cmb2'),
+            'desc'    => __('', 'cmb2'),
+            'id'      => $prefix . 'harga_real',
+            'type'    => 'text',
+            'attributes' => array('class' => 'format-rupiah form-control'),
+        ));
 
-    $cmb->add_field(array(
-        'name'    => __('Harga Kesepakatan', 'cmb2'),
-        'desc'    => __('', 'cmb2'),
-        'id'      => $prefix . 'harga_kesepakatan',
-        'type'    => 'text',
-        'attributes' => array('class' => 'format-rupiah form-control'),
-    ));
+        $cmb->add_field(array(
+            'name'    => __('Harga Kesepakatan', 'cmb2'),
+            'desc'    => __('', 'cmb2'),
+            'id'      => $prefix . 'harga_kesepakatan',
+            'type'    => 'text',
+            'attributes' => array('class' => 'format-rupiah form-control'),
+        ));
 
-    $cmb->add_field(array(
-        'name'    => __('Data Pajak Pembeli', 'cmb2'),
-        'desc'    => __('', 'cmb2'),
-        'id'      => $prefix . 'pajak_pembeli',
-        'type'    => 'text',
-        'attributes' => array('class' => 'format-rupiah form-control'),
-    ));
+        $cmb->add_field(array(
+            'name'    => __('Data Pajak Pembeli', 'cmb2'),
+            'desc'    => __('', 'cmb2'),
+            'id'      => $prefix . 'pajak_pembeli',
+            'type'    => 'text',
+            'attributes' => array('class' => 'format-rupiah form-control'),
+        ));
 
-    $cmb->add_field(array(
-        'name'    => __('Data Pajak Penjual', 'cmb2'),
-        'desc'    => __('', 'cmb2'),
-        'id'      => $prefix . 'pajak_penjual',
-        'type'    => 'text',
-        'attributes' => array('class' => 'format-rupiah form-control'),
-    ));
+        $cmb->add_field(array(
+            'name'    => __('Data Pajak Penjual', 'cmb2'),
+            'desc'    => __('', 'cmb2'),
+            'id'      => $prefix . 'pajak_penjual',
+            'type'    => 'text',
+            'attributes' => array('class' => 'format-rupiah form-control'),
+        ));
+    endif;
 }
 
 add_action('cmb2_init', 'add_customer_data_metabox');

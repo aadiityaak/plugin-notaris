@@ -297,7 +297,7 @@ function display_user_list()
             $status = get_user_meta($user_id, 'status', true) ?? '-';
             echo '<tr>';
             echo '<td style="text-align: center;">' . $number++ . '.' . '</td>';
-            echo '<td><div class="d-flex align-items-center" style="white-space: nowrap"><img class="rounded-circle ratio ratio-1x1 me-2" style="width: 100%; height: 100%; max-width: 40px; aspect-ratio: 1/1; object-fit: cover;" src="' . $poto_profil . '">' . $user->display_name . '</div></td>';
+            echo '<td style="white-space: nowrap"><div class="d-flex align-items-center"><img class="rounded-circle ratio ratio-1x1 me-2" style="width: 100%; height: 100%; max-width: 40px; aspect-ratio: 1/1; object-fit: cover;" src="' . $poto_profil . '">' . $user->first_name . '</div></td>';
             echo '<td>' . $pic_staff . '</td>';
             echo '<td>' . $no_telpon_staff . '</td>';
             echo '<td>' . $user->user_email . '</td>';
@@ -643,16 +643,31 @@ function draft_kerja_shortcode()
                             <td>
                                 <?php
                                 $tgl = get_post_meta($post->ID, 'tanggal_order', true);
-                                $awal = new DateTime($tgl);
-                                $akhir = new DateTime(date('U'));
 
-                                // Menghitung selisih hari
-                                $selisih = $awal->diff($akhir);
-                                $hari = $selisih->d . ' hari';
-                                $warna = ($selisih->d >= 30) ? 'danger' : ($selisih->d >= 10 ? 'warning' : 'success');
+                                // Memeriksa apakah $tgl bukan kosong dan merupakan timestamp yang valid
+                                if (!empty($tgl) && (is_numeric($tgl) || strtotime($tgl) !== false)) {
+                                    // Jika $tgl adalah timestamp Unix
+                                    if (is_numeric($tgl) && strlen($tgl) === 10) {
+                                        $awal = new DateTime();
+                                        $awal->setTimestamp((int)$tgl);
+                                    } else {
+                                        // Jika $tgl adalah format tanggal yang dapat dibaca
+                                        $awal = new DateTime($tgl);
+                                    }
 
-                                echo $tgl ? '<span data-bs-toggle="tooltip" data-bs-title="' . $hari . '" class="badge bg-' . $warna . '">' . date("d m Y", strtotime($tgl)) . '</span>' : '';
+                                    $akhir = new DateTime();
+
+                                    // Menghitung selisih hari
+                                    $selisih = $awal->diff($akhir);
+                                    $hari = $selisih->d . ' hari';
+                                    $warna = ($selisih->d >= 30) ? 'danger' : ($selisih->d >= 10 ? 'warning' : 'success');
+
+                                    echo '<span data-bs-toggle="tooltip" data-bs-title="' . $hari . '" class="badge bg-' . $warna . '">' . $awal->format("d m Y") . '</span>';
+                                } else {
+                                    echo ''; // Atau bisa ditambahkan pesan untuk tanggal tidak valid
+                                }
                                 ?>
+
                             </td>
                             <td style="max-width: 200ox;">
                                 <?php
@@ -780,7 +795,7 @@ function draft_kerja_shortcode()
                                         <?php endif; ?>
                                         <!-- Button trigger modal -->
                                         <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                            <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Jobdesk">
+                                            <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Data">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
                                                     <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
                                                     <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
@@ -796,11 +811,11 @@ function draft_kerja_shortcode()
                                             $customer = get_post_meta($post->ID, 'customer_select', true);
                                             $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
                                             $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
-                                            $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                            $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
                                             $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
-                                            $harga_real = get_post_meta($post->ID, 'harga_real', true);
+                                            $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
                                             $harga_real = preg_replace('/[^0-9]/', '', $harga_real);
-                                            $harga_kesepakatan = get_post_meta($post->ID, 'harga_kesepakatan', true);
+                                            $harga_kesepakatan = get_post_meta($customer, '_customer_data_harga_kesepakatan', true);
                                             $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
                                             $alamat = get_post_meta($customer, '_customer_data_alamat', true);
                                             ?>
@@ -846,7 +861,7 @@ function draft_kerja_shortcode()
                             <?php if ($status_post == 'selesai'): ?>
                                 <td>
                                     <div class="btn-group">
-                                        <a class="btn btn-success btn-sm btn-success text-white w-100" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalData">
+                                        <a class="btn btn-success btn-sm btn-success text-white w-100" style="white-space: nowrap;" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalData<?php echo $post->ID; ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-clipboard-data" viewBox="0 0 16 16">
                                                 <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
                                                 <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
@@ -855,7 +870,7 @@ function draft_kerja_shortcode()
                                         </a>
                                     </div>
                                     <!-- Isi modal -->
-                                    <div class="modal fade" id="exampleModalData" tabindex="-1" aria-labelledby="exampleModalData" aria-hidden="true">
+                                    <div class="modal fade" id="exampleModalData<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="exampleModalData" aria-hidden="true">
                                         <?php
                                         $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
                                         $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
@@ -867,7 +882,6 @@ function draft_kerja_shortcode()
                                         $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
                                         $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
                                         $harga_real = preg_replace('/[^0-9]/', '', $harga_real);
-                                        // echo $harga_real;
                                         $harga_kesepakatan = get_post_meta($customer, '_customer_data_harga_kesepakatan', true);
                                         $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
                                         $alamat = get_post_meta($customer, '_customer_data_alamat', true);
@@ -954,6 +968,7 @@ function data_konsumen()
     $post_per_page = 20;
     // Number increment
     $number = 1;
+    $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
 
     if (!(current_user_can('administrator') || current_user_can('editor'))) {
         return 'Silahkan login sebagai administrator untuk melihat data.';
@@ -1180,26 +1195,28 @@ function data_konsumen()
                                                                     <div class="fw-bold">Sertifikat</div>
                                                                     <?php echo !empty(get_post_meta($post->ID, '_customer_data_sertifikat', true)) ? get_post_meta($post->ID, '_customer_data_sertifikat', true) : '-'; ?>
                                                                 </li>
-                                                                <li class="list-group-item">
-                                                                    <div class="fw-bold">Nilai Transaksi</div>
-                                                                    <?php echo !empty(get_post_meta($post->ID, '_customer_data_nilai_transaksi', true)) ? get_post_meta($post->ID, '_customer_data_nilai_transaksi', true) : '-'; ?>
-                                                                </li>
-                                                                <li class="list-group-item">
-                                                                    <div class="fw-bold">Harga Real</div>
-                                                                    <?php echo !empty(get_post_meta($post->ID, '_customer_data_harga_real', true)) ? get_post_meta($post->ID, '_customer_data_harga_real', true) : '-'; ?>
-                                                                </li>
-                                                                <li class="list-group-item">
-                                                                    <div class="fw-bold">Harga Kesepakatan</div>
-                                                                    <?php echo !empty(get_post_meta($post->ID, '_customer_data_harga_kesepakatan', true)) ? get_post_meta($post->ID, '_customer_data_harga_kesepakatan', true) : '-'; ?>
-                                                                </li>
-                                                                <li class="list-group-item">
-                                                                    <div class="fw-bold">Data Pajak Pembeli</div>
-                                                                    <?php echo !empty(get_post_meta($post->ID, '_customer_data_pajak_pembeli', true)) ? get_post_meta($post->ID, '_customer_data_pajak_pembeli', true) : '-'; ?>
-                                                                </li>
-                                                                <li class="list-group-item">
-                                                                    <div class="fw-bold">Data Pajak Penjual</div>
-                                                                    <?php echo !empty(get_post_meta($post->ID, '_customer_data_pajak_penjual', true)) ? get_post_meta($post->ID, '_customer_data_pajak_penjual', true) : '-'; ?>
-                                                                </li>
+                                                                <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
+                                                                    <li class="list-group-item">
+                                                                        <div class="fw-bold">Nilai Transaksi</div>
+                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_nilai_transaksi', true)) ? get_post_meta($post->ID, '_customer_data_nilai_transaksi', true) : '-'; ?>
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        <div class="fw-bold">Harga Real</div>
+                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_harga_real', true)) ? get_post_meta($post->ID, '_customer_data_harga_real', true) : '-'; ?>
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        <div class="fw-bold">Harga Kesepakatan</div>
+                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_harga_kesepakatan', true)) ? get_post_meta($post->ID, '_customer_data_harga_kesepakatan', true) : '-'; ?>
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        <div class="fw-bold">Data Pajak Pembeli</div>
+                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_pajak_pembeli', true)) ? get_post_meta($post->ID, '_customer_data_pajak_pembeli', true) : '-'; ?>
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        <div class="fw-bold">Data Pajak Penjual</div>
+                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_pajak_penjual', true)) ? get_post_meta($post->ID, '_customer_data_pajak_penjual', true) : '-'; ?>
+                                                                    </li>
+                                                                <?php endif; ?>
                                                             </ol>
                                                         </div>
                                                     </div>

@@ -53,16 +53,18 @@ class Custom_Plugin_Shortcode
         ));
 
         // Nama Pengguna
-        $cmb_user->add_field(array(
-            'name'    => 'Username',
-            'id'      => 'user_login',
-            'type'    => 'text',
-            'default' => $user_login,
-            'attributes' => array(
-                'required' => 'required', // Tambahkan atribut required
-                'autocomplete' => '',
-            ),
-        ));
+        if (!$user_id) {
+            $cmb_user->add_field(array(
+                'name'    => 'Username',
+                'id'      => 'user_login',
+                'type'    => 'text',
+                'default' => $user_login,
+                'attributes' => array(
+                    'required' => 'required', // Tambahkan atribut required
+                    'autocomplete' => '',
+                ),
+            ));
+        };
         // PIC
         $cmb_user->add_field(array(
             'name'    => 'Nama PIC',
@@ -119,6 +121,7 @@ class Custom_Plugin_Shortcode
             'type'    => 'select',
             'default' => $user_role,
             'options' => array(
+                'owner' => 'Owner',
                 'staff' => 'Staff',
                 'keuangan'  => 'Keuangan',
                 'administrator' => 'Supervisor',
@@ -197,7 +200,7 @@ class Custom_Plugin_Shortcode
             } else {
                 $output .= '<div class="alert alert-success">User ' . ($user_id ? 'updated' : 'added') . ' successfully with ID: ' . $result . '</div>';
                 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? "https://" : "http://";
-                $full_url = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                $full_url = $protocol . $_SERVER['HTTP_HOST'] . '/data-staff?type=staff';
                 $output .= '<script>window.location.href = "' . $full_url . '";</script>';
             }
         }
