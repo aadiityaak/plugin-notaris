@@ -603,10 +603,10 @@ function jobdesk_shortcode($atts)
     ?>
         <div class="container">
             <div class="card mb-5">
-                <div class="card-header text-center" style="background-color: #4EA9F5;">
+                <div class="card-header text-start" style="background-color: #4EA9F5;">
                     <h5 class="card-title">
                         <b style="color: white;">
-                            <?php echo get_post_meta($get_post_id, 'layanan', true); ?>
+                            <?php echo get_the_title($get_post_id); ?>
                         </b>
                     </h5>
                 </div>
@@ -691,7 +691,7 @@ function jobdesk_shortcode($atts)
         echo '<th class="bg-blue text-white" scope="col">Mulai</th>';
         echo '<th class="bg-blue text-white" scope="col">Selesai</th>';
         echo '<th class="bg-blue text-white" scope="col">Status</th>';
-        echo '<th class="bg-blue text-white" scope="col">Actions</th>';
+        echo '<th class="bg-blue text-white text-end" scope="col">Actions</th>';
         echo '</tr>';
         echo '</thead>';
         echo '<tbody>';
@@ -707,24 +707,25 @@ function jobdesk_shortcode($atts)
             $user_info = get_userdata($id_staff);
             $firt_name = $user_info->first_name ?? '';
             $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
-            $job_desk_draft_kerja = get_post_meta($post->ID, 'job_desk_draft_kerja', true);
+            $job_desk_draft_kerja = get_post_meta($post_id, 'job_desk_draft_kerja', true);
             $job_desk = get_post($job_desk_draft_kerja);
-            $customer = get_post_meta($job_desk->ID, 'customer_select', true);
-            $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
+            $customer_id = get_post_meta($job_desk->ID, 'customer_select', true);
+            $nama = get_post_meta($customer_id, '_customer_data_nama_lengkap', true);
+
             echo '<tr>';
             echo '<th scope="row">' . $count++ . '</th>';
             echo '<td><div style="white-space: nowrap;">';
-            echo '<a href="?post_id=' . esc_attr($parent) . '">' . esc_html(get_post_meta($parent, 'layanan', true)) . '</a><br>';
-            echo '<small class="text-muted">ID: ' . esc_html(get_the_title($post_id)) . '</small><br>';
-            echo '<small class="text-muted">Nama: ' . esc_html($nama) . '</small>';
+            echo '<a href="?post_id=' . esc_attr($parent) . '">' . esc_html(get_the_title($parent)) . '</a><br>';
+            echo '<small class="text-muted">Konsumen: ' . $nama . '</small>';
             echo '</div></td>';
-            echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'judul_job_desk', true) . '</td>';
+            echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'judul_job_desk', true) . '<br>';
+            echo '<small class="text-muted">ID: ' . esc_html(get_the_title($post_id)) . '</small></td>';
             echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'job_desk_kategori_select', true) . '</div></td>';
             echo '<td><div style="white-space: nowrap;">' . $firt_name . '</td>';
             echo '<td><div style="white-space: nowrap;">' . convertDateFormat(get_post_meta($post_id, 'job_desk_start', true)) . '</div></td>';
             echo '<td><div style="white-space: nowrap;">' . convertDateFormat(get_post_meta($post_id, 'job_desk_end', true)) . '</div></td>';
             echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'job_desk_status', true) . '</div></td>';
-            echo '<td>';
+            echo '<td class="text-end">';
             echo '<div class="btn-group" style="white-space: nowrap;" role="group" aria-label="Basic example">';
             echo '<button type="button" data-url="' . get_site_url() . '/kelola-job-desk/?post_id=' . $post->ID . '" class="btn btn-sm me-1 btn-primary text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ' . $disable_button . '>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil" viewBox="0 0 16 16">

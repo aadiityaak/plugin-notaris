@@ -1295,7 +1295,7 @@ function data_konsumen()
                 else :
                     ?>
                     <tr>
-                        <td colspan="2">Tidak ada Order yang ditemukan</td>
+                        <td colspan="6">Tidak ada Order yang ditemukan</td>
                     </tr>
                 <?php
                 endif;
