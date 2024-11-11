@@ -53,18 +53,18 @@ class Custom_Plugin_Shortcode
         ));
 
         // Nama Pengguna
-        if (!$user_id) {
-            $cmb_user->add_field(array(
-                'name'    => 'Username',
-                'id'      => 'user_login',
-                'type'    => 'text',
-                'default' => $user_login,
-                'attributes' => array(
-                    'required' => 'required', // Tambahkan atribut required
-                    'autocomplete' => '',
-                ),
-            ));
-        };
+        // if (!$user_id) {
+        $cmb_user->add_field(array(
+            'name'    => 'Username',
+            'id'      => 'user_login',
+            'type'    => 'text',
+            'default' => $user_login,
+            'attributes' => array(
+                'required' => 'required', // Tambahkan atribut required
+                'autocomplete' => '',
+            ),
+        ));
+        // };
         // PIC
         $cmb_user->add_field(array(
             'name'    => 'Nama PIC',

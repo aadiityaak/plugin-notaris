@@ -707,9 +707,17 @@ function jobdesk_shortcode($atts)
             $user_info = get_userdata($id_staff);
             $firt_name = $user_info->first_name ?? '';
             $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
+            $job_desk_draft_kerja = get_post_meta($post->ID, 'job_desk_draft_kerja', true);
+            $job_desk = get_post($job_desk_draft_kerja);
+            $customer = get_post_meta($job_desk->ID, 'customer_select', true);
+            $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
             echo '<tr>';
             echo '<th scope="row">' . $count++ . '</th>';
-            echo '<td><div style="white-space: nowrap;"><a href="?post_id=' . $parent . '">' . get_post_meta($parent, 'layanan', true) . '</a><br><small class="text-muted">ID: ' . get_the_title($post_id) . '<small></div></td>';
+            echo '<td><div style="white-space: nowrap;">';
+            echo '<a href="?post_id=' . esc_attr($parent) . '">' . esc_html(get_post_meta($parent, 'layanan', true)) . '</a><br>';
+            echo '<small class="text-muted">ID: ' . esc_html(get_the_title($post_id)) . '</small><br>';
+            echo '<small class="text-muted">Nama: ' . esc_html($nama) . '</small>';
+            echo '</div></td>';
             echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'judul_job_desk', true) . '</td>';
             echo '<td><div style="white-space: nowrap;">' . get_post_meta($post_id, 'job_desk_kategori_select', true) . '</div></td>';
             echo '<td><div style="white-space: nowrap;">' . $firt_name . '</td>';

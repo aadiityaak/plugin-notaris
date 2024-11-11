@@ -188,6 +188,15 @@ function display_user_list()
     $post_per_page = 20;
     // Number increament
     $number = 1;
+    if ($user_id) {
+    ?>
+        <style>
+            .cmb2-id-user-login {
+                display: none;
+            }
+        </style>
+    <?php
+    }
 
     if (!(current_user_can('administrator') || current_user_can('editor'))) {
         return 'Silahkan login sebagai administrator untuk melihat data.';
@@ -232,7 +241,13 @@ function display_user_list()
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="tambahUserlLabel">Tambah User</h1>
+                        <h1 class="modal-title fs-5" id="tambahUserlLabel">
+                            <?php if (!empty($user_id)) { ?>
+                                Edit Data User
+                            <?php } else { ?>
+                                Tambah User
+                            <?php } ?>
+                        </h1>
                         <a href="<?php echo get_site_url(); ?>/data-staff/?type=staff" type="button" class="btn-close"></a>
                     </div>
                     <div class="modal-body">
@@ -512,7 +527,7 @@ function draft_kerja_shortcode()
                     <th class="bg-blue text-white" scope="col">No.</th>
                     <th class="bg-blue text-white" scope="col">No Order</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 120px;">Tgl Order</th>
-                    <th class="bg-blue text-white" scope="col">Pelanggan</th>
+                    <th class="bg-blue text-white" scope="col" style="min-width: 200px;">Pelanggan</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 140px;">Pembayaran</th>
                     <!-- Sembunyikan biaya hanya tampil pada admin saja selain admin tidak ditampilkan  -->
                     <!-- Tampil hanya di admin dan keuangan -->
@@ -521,6 +536,8 @@ function draft_kerja_shortcode()
                     <?php endif; ?>
                     <th class="bg-blue text-white" scope="col">Progres</th>
                     <th class="bg-blue text-white" scope="col">Kategori</th>
+                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai BPHTB</th>
+                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai SSP</th>
                     <th class="bg-blue text-white" scope="col">Keterangan</th>
                     <th class="bg-blue text-white" scope="col">Petugas</th>
                     <?php if ($status_post != 'selesai'): ?>
@@ -669,7 +686,7 @@ function draft_kerja_shortcode()
                                 ?>
 
                             </td>
-                            <td style="max-width: 200ox;">
+                            <td style="max-width: 200px;">
                                 <?php
                                 $customer = get_post_meta($post->ID, 'customer_select', true);
                                 $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
@@ -747,10 +764,34 @@ function draft_kerja_shortcode()
                                     ?>
                                 </small>
                             </td>
+                            <!-- Tampilkan nilai BPHTB -->
                             <td>
+                                <?php
+                                $nilai_bphtb = get_post_meta($customer, '_customer_data_pajak_pembeli', true);
+
+                                if ($nilai_bphtb && is_numeric($nilai_bphtb)) {
+                                    echo 'Rp ' . number_format($nilai_bphtb, 0, ',', '.');
+                                } else {
+                                    echo '-';
+                                }
+                                ?><br />
+                            </td>
+                            <!-- Tampilkan nilai SSP -->
+                            <td>
+                                <?php
+                                $nilai_ssp = get_post_meta($customer, '_customer_data_pajak_penjual', true);
+
+                                if ($nilai_ssp && is_numeric($nilai_ssp)) {
+                                    echo 'Rp ' . number_format($nilai_ssp, 0, ',', '.');
+                                } else {
+                                    echo '-';
+                                }
+                                ?><br />
+                            </td>
+                            <td style="white-space: nowrap;">
                                 <?php echo get_post_meta($post->ID, 'layanan', true); ?><br />
                             </td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <small>
                                     <?php
                                     // Mendapatkan ID penulis berdasarkan ID postingan
@@ -1037,7 +1078,7 @@ function data_konsumen()
                                 <?php echo get_post_meta($post->ID, '_customer_data_nama_lengkap', true); ?>
                             </td>
                             <td style="white-space: nowrap;"><?php echo get_post_meta($post->ID, '_customer_data_whatsapp', true); ?></td>
-                            <td style="max-width: 300px; white-space: nowrap;""><?php echo get_post_meta($post->ID, '_customer_data_alamat', true); ?></td>
+                            <td style="max-width: 300px;"><?php echo get_post_meta($post->ID, '_customer_data_alamat', true); ?></td>
                             <td style=" white-space: nowrap;">
                                 <?php
                                 $kategori = get_post_meta($post->ID, '_customer_data_kategori', true);

@@ -35,11 +35,11 @@ function pekerjaan_metabox_metabox()
         'type'             => 'text_date',
         'attributes' => array('autocomplete' => 'off'),
     ));
-    $cmb_group->add_field(array(
-        'name'             => 'Layanan',
-        'id'               => $prefix . 'layanan',
-        'type'             => 'text',
-    ));
+    // $cmb_group->add_field(array(
+    //     'name'             => 'Layanan',
+    //     'id'               => $prefix . 'layanan',
+    //     'type'             => 'text',
+    // ));
     $cmb_group->add_field(array(
         'name'             => 'Biaya Notaris',
         'id'               => $prefix . 'biaya_transaksi',
@@ -325,13 +325,13 @@ function add_customer_data_metabox()
     ));
 
     if (current_user_can('administrator') || $jabatan_staff == 'keuangan'):
-        $cmb->add_field(array(
-            'name'    => __('Nilai Transaksi', 'cmb2'),
-            'desc'    => __('', 'cmb2'),
-            'id'      => $prefix . 'nilai_transaksi',
-            'type'    => 'text',
-            'attributes' => array('class' => 'format-rupiah form-control'),
-        ));
+        // $cmb->add_field(array(
+        //     'name'    => __('Nilai Transaksi', 'cmb2'),
+        //     'desc'    => __('', 'cmb2'),
+        //     'id'      => $prefix . 'nilai_transaksi',
+        //     'type'    => 'text',
+        //     'attributes' => array('class' => 'format-rupiah form-control'),
+        // ));
 
         $cmb->add_field(array(
             'name'    => __('Harga Real', 'cmb2'),
@@ -350,7 +350,7 @@ function add_customer_data_metabox()
         ));
 
         $cmb->add_field(array(
-            'name'    => __('Data Pajak Pembeli', 'cmb2'),
+            'name'    => __('Nilai BPHTB', 'cmb2'),
             'desc'    => __('', 'cmb2'),
             'id'      => $prefix . 'pajak_pembeli',
             'type'    => 'text',
@@ -358,7 +358,7 @@ function add_customer_data_metabox()
         ));
 
         $cmb->add_field(array(
-            'name'    => __('Data Pajak Penjual', 'cmb2'),
+            'name'    => __('Nilai SSP', 'cmb2'),
             'desc'    => __('', 'cmb2'),
             'id'      => $prefix . 'pajak_penjual',
             'type'    => 'text',
