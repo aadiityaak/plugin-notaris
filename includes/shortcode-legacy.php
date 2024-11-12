@@ -474,9 +474,9 @@ function draft_kerja_shortcode()
     <div class="container">
         <div class="mb-2 row mx-0">
             <div class="col-sm-2 px-0">
-                <a class="btn btn-success btn-sm text-white d-block me-1" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/">Tambah Order</a>
+                <a class="btn btn-success btn-sm text-white d-block me-md-1" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/" style="white-space:nowrap">Tambah Order</a>
             </div>
-            <div class="col-sm-3 d-md-flex my-3 my-md-0 px-1">
+            <div class="col-sm-3 d-md-flex my-3 my-md-0 px-0 px-md-1">
                 <!-- search form -->
                 <form action="?" method="get" class="d-flex">
                     <input class="form-control form-control-sm me-2" type="search" placeholder="Cari no order" aria-label="Cari" value="<?php echo $s; ?>" name="filter">
