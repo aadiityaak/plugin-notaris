@@ -473,7 +473,7 @@ function draft_kerja_shortcode()
     <!-- <div class="table-responsive m-3"> -->
     <div class="container">
         <div class="mb-2 row mx-0">
-            <div class="col-sm-2 px-0 ps-1">
+            <div class="col-sm-2 px-0">
                 <a class="btn btn-success btn-sm text-white d-block me-1" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/">Tambah Order</a>
             </div>
             <div class="col-sm-3 d-md-flex my-3 my-md-0 px-1">
@@ -483,7 +483,7 @@ function draft_kerja_shortcode()
                     <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
                 </form>
             </div>
-            <div class="col-sm-7 pe-1 d-flex justify-content-between text-sm-end text-right">
+            <div class="col-sm-7 pe-0 d-flex justify-content-between text-sm-end text-right">
                 <div class="d-flex justify-content-start align-items-center">
                     <?php
                     $konsumen = $_GET['konsumen'] ?? '';
@@ -521,332 +521,398 @@ function draft_kerja_shortcode()
                 </div>
             </div>
         </div>
-    </div>
-    <div class="table-responsive m-3 mt-1">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="bg-blue text-white" scope="col">No.</th>
-                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">No Order</th>
-                    <th class="bg-blue text-white" scope="col" style="min-width: 120px;">Tgl Order</th>
-                    <th class="bg-blue text-white" scope="col" style="min-width: 200px;">Pelanggan</th>
-                    <th class="bg-blue text-white" scope="col" style="min-width: 140px;">Pembayaran</th>
-                    <!-- Sembunyikan biaya hanya tampil pada admin saja selain admin tidak ditampilkan  -->
-                    <!-- Tampil hanya di admin dan keuangan -->
-                    <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
-                        <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Biaya Notaris</th>
-                    <?php endif; ?>
-                    <th class="bg-blue text-white" scope="col">Progres</th>
-                    <th class="bg-blue text-white" scope="col">Kategori</th>
-                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai BPHTB</th>
-                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai SSP</th>
-                    <th class="bg-blue text-white" scope="col">Keterangan</th>
-                    <th class="bg-blue text-white" scope="col">Petugas</th>
-                    <?php if ($status_post != 'selesai'): ?>
-                        <th class="bg-blue text-white text-end" scope="col">Action</th>
-                    <?php endif; ?>
-                    <?php if ($status_post == 'selesai'): ?>
-                        <th class="bg-blue text-white text-end" style="white-space: nowrap;" scope="col">Lihat Data</th>
-                    <?php endif; ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $status_post = isset($_GET['status_post']) ? $_GET['status_post'] : 'aktif';
-                $args = array(
-                    'post_type' => 'draft_kerja',
-                    'paged' => $paged,
-                    'posts_per_page' => $post_per_page,
-                    'order' => 'ASC',
-                    's' => $s,
-                    'meta_query' => array(
-                        'relation' => 'AND',
-                    )
-                );
-
-                if ($status_post == 'arsip') {
-                    $args['meta_query'][] = array(
-                        'key' => 'job_desk_status',
-                        'value' => 'arsip',
-                        'compare' => '='
+        <div class="table-responsive mt-1">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="bg-blue text-white" scope="col">No.</th>
+                        <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">No Order</th>
+                        <th class="bg-blue text-white" scope="col" style="min-width: 120px;">Tgl Order</th>
+                        <th class="bg-blue text-white" scope="col" style="min-width: 200px;">Pelanggan</th>
+                        <th class="bg-blue text-white" scope="col" style="min-width: 140px;">Pembayaran</th>
+                        <!-- Sembunyikan biaya hanya tampil pada admin saja selain admin tidak ditampilkan  -->
+                        <!-- Tampil hanya di admin dan keuangan -->
+                        <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
+                            <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Biaya Notaris</th>
+                        <?php endif; ?>
+                        <th class="bg-blue text-white" scope="col">Progres</th>
+                        <th class="bg-blue text-white" scope="col">Kategori</th>
+                        <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai BPHTB</th>
+                        <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai SSP</th>
+                        <th class="bg-blue text-white" scope="col">Keterangan</th>
+                        <th class="bg-blue text-white" scope="col">Petugas</th>
+                        <?php if ($status_post != 'selesai'): ?>
+                            <th class="bg-blue text-white text-end" scope="col">Action</th>
+                        <?php endif; ?>
+                        <?php if ($status_post == 'selesai'): ?>
+                            <th class="bg-blue text-white text-end" style="white-space: nowrap;" scope="col">Lihat Data</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $status_post = isset($_GET['status_post']) ? $_GET['status_post'] : 'aktif';
+                    $args = array(
+                        'post_type' => 'draft_kerja',
+                        'paged' => $paged,
+                        'posts_per_page' => $post_per_page,
+                        'order' => 'ASC',
+                        's' => $s,
+                        'meta_query' => array(
+                            'relation' => 'AND',
+                        )
                     );
-                } elseif ($status_post == 'selesai') {
-                    $args['meta_query'][] = array(
-                        'key' => 'job_desk_status',
-                        'value' => 'selesai',
-                        'compare' => '='
-                    );
-                } else {
-                    $args['meta_query'][] = array(
-                        'key' => 'job_desk_status',
-                        'value' => array('arsip', 'selesai'),
-                        'compare' => 'NOT IN'
-                    );
-                }
+
+                    if ($status_post == 'arsip') {
+                        $args['meta_query'][] = array(
+                            'key' => 'job_desk_status',
+                            'value' => 'arsip',
+                            'compare' => '='
+                        );
+                    } elseif ($status_post == 'selesai') {
+                        $args['meta_query'][] = array(
+                            'key' => 'job_desk_status',
+                            'value' => 'selesai',
+                            'compare' => '='
+                        );
+                    } else {
+                        $args['meta_query'][] = array(
+                            'key' => 'job_desk_status',
+                            'value' => array('arsip', 'selesai'),
+                            'compare' => 'NOT IN'
+                        );
+                    }
 
 
 
-                // Tambahkan kondisi untuk 'konsumen' jika tersedia
-                if (isset($_GET['konsumen'])) {
-                    $args['meta_query'][] = array(
-                        'key' => 'customer_select',
-                        'value' => sanitize_text_field($_GET['konsumen']),
-                        'compare' => '=' // Opsional, '=' adalah default value dari 'compare'
-                    );
-                }
-                // print_r($args);
-                // Buat query
-                $query = new WP_Query($args);
+                    // Tambahkan kondisi untuk 'konsumen' jika tersedia
+                    if (isset($_GET['konsumen'])) {
+                        $args['meta_query'][] = array(
+                            'key' => 'customer_select',
+                            'value' => sanitize_text_field($_GET['konsumen']),
+                            'compare' => '=' // Opsional, '=' adalah default value dari 'compare'
+                        );
+                    }
+                    // print_r($args);
+                    // Buat query
+                    $query = new WP_Query($args);
 
-                if ($query->have_posts()) :
-                    while ($query->have_posts()) : $query->the_post();
+                    if ($query->have_posts()) :
+                        while ($query->have_posts()) : $query->the_post();
 
 
-                        $job_desk_posts = get_posts(array(
-                            'post_type'      => 'job_desk',
-                            'posts_per_page' => -1,
-                            'meta_key'       => 'job_desk_draft_kerja',
-                            'meta_value'     => $post->ID,
-                            'order-by'       => 'date',
-                            'order'          => 'DESC',
-                        ));
+                            $job_desk_posts = get_posts(array(
+                                'post_type'      => 'job_desk',
+                                'posts_per_page' => -1,
+                                'meta_key'       => 'job_desk_draft_kerja',
+                                'meta_value'     => $post->ID,
+                                'order-by'       => 'date',
+                                'order'          => 'DESC',
+                            ));
 
-                        $dokumen = get_posts(array(
-                            'post_type' => 'dokumen',
-                            'post_status' => 'publish',
-                            'posts_per_page' => -1,
-                            'meta_query' => array(
-                                array(
-                                    'key' => 'id_order',
-                                    'value' => $post->ID,
-                                    'compare' => '='
+                            $dokumen = get_posts(array(
+                                'post_type' => 'dokumen',
+                                'post_status' => 'publish',
+                                'posts_per_page' => -1,
+                                'meta_query' => array(
+                                    array(
+                                        'key' => 'id_order',
+                                        'value' => $post->ID,
+                                        'compare' => '='
+                                    )
                                 )
-                            )
-                        ));
+                            ));
 
-                        // Menghitung total job_desk posts
-                        $total_job_desk_posts = count($job_desk_posts);
+                            // Menghitung total job_desk posts
+                            $total_job_desk_posts = count($job_desk_posts);
 
-                        // Menampilkan job_desk posts
-                        $selesai = [];
-                        foreach ($job_desk_posts as $job_desk_post) {
-                            $status = get_post_meta($job_desk_post->ID, 'job_desk_status', true);
-                            if ($status == 'Selesai') {
-                                $selesai[] = $job_desk_post->ID;
-                            }
-                        }
-                        if ($total_job_desk_posts > 0 && $total_job_desk_posts == count($selesai)) {
-                            $progres = '<span class="badge bg-success">Selesai</span>';
-                            update_post_meta($post->ID, 'job_desk_status', 'arsip');
-                            // skip the rest of the loop
-                            if (count($dokumen) > 0) {
-                                update_post_meta($post->ID, 'job_desk_status', 'selesai');
-                            }
-                        } else {
-                            update_post_meta($post->ID, 'job_desk_status', 'aktif');
-                            $progres = '<span data-bs-toggle="tooltip" data-bs-title="' . count($selesai) . '/' . $total_job_desk_posts . '" class="badge bg-warning">Dalam Proses</span>';
-                        }
-                ?>
-                        <tr>
-                            <!-- Nomor -->
-                            <td><?php echo $number++; ?></td>
-                            <td style="width: 140px; white-space: nowrap">
-                                <a href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>" class="flex">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
-                                        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
-                                        <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
-                                    </svg>
-                                    <?php the_title(); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <?php
-                                $tgl = get_post_meta($post->ID, 'tanggal_order', true);
-
-                                // Memeriksa apakah $tgl bukan kosong dan merupakan timestamp yang valid
-                                if (!empty($tgl) && (is_numeric($tgl) || strtotime($tgl) !== false)) {
-                                    // Jika $tgl adalah timestamp Unix
-                                    if (is_numeric($tgl) && strlen($tgl) === 10) {
-                                        $awal = new DateTime();
-                                        $awal->setTimestamp((int)$tgl);
-                                    } else {
-                                        // Jika $tgl adalah format tanggal yang dapat dibaca
-                                        $awal = new DateTime($tgl);
-                                    }
-
-                                    $akhir = new DateTime();
-
-                                    // Menghitung selisih hari
-                                    $selisih = $awal->diff($akhir);
-                                    $hari = $selisih->d . ' hari';
-                                    $warna = ($selisih->d >= 30) ? 'danger' : ($selisih->d >= 10 ? 'warning' : 'success');
-
-                                    echo '<span data-bs-toggle="tooltip" data-bs-title="' . $hari . '" class="badge bg-' . $warna . '">' . $awal->format("d m Y") . '</span>';
-                                } else {
-                                    echo ''; // Atau bisa ditambahkan pesan untuk tanggal tidak valid
+                            // Menampilkan job_desk posts
+                            $selesai = [];
+                            foreach ($job_desk_posts as $job_desk_post) {
+                                $status = get_post_meta($job_desk_post->ID, 'job_desk_status', true);
+                                if ($status == 'Selesai') {
+                                    $selesai[] = $job_desk_post->ID;
                                 }
-                                ?>
-
-                            </td>
-                            <td style="max-width: 200px;">
-                                <?php
-                                $customer = get_post_meta($post->ID, 'customer_select', true);
-                                $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
-                                echo '<a href="?konsumen=' . $customer . '">';
-                                echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
-                                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/>
-                                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
-                            </svg>';
-                                echo $nama . '</a>';
-                                //echo '<small>('.get_post_meta($customer, '_customer_data_whatsapp', true).')</small>';
-                                ?>
-                                <br>
-                                <small class="text-muted">
-                                    <?php echo get_post_meta($customer, '_customer_data_whatsapp', true); ?>
-                                    <br>
-                                    <?php echo get_post_meta($customer, '_customer_data_alamat', true); ?>
-                                </small>
-                            </td>
-                            <td>
-                                <?php
-                                $pembayaran = get_post_meta($post->ID, 'jenis_pembayaran', true);
-
-                                if ($pembayaran == 'tunai') {
-                                    echo 'Tunai';
-                                } else if ($pembayaran == 'transfer') {
-                                    echo 'Transfer';
-                                } else {
-                                    echo '-';
+                            }
+                            if ($total_job_desk_posts > 0 && $total_job_desk_posts == count($selesai)) {
+                                $progres = '<span class="badge bg-success">Selesai</span>';
+                                update_post_meta($post->ID, 'job_desk_status', 'arsip');
+                                // skip the rest of the loop
+                                if (count($dokumen) > 0) {
+                                    update_post_meta($post->ID, 'job_desk_status', 'selesai');
                                 }
-                                ?>
-                            </td>
-                            <?php if (current_user_can('administrator')): ?>
-                                <td style="min-width:150px;">
+                            } else {
+                                update_post_meta($post->ID, 'job_desk_status', 'aktif');
+                                $progres = '<span data-bs-toggle="tooltip" data-bs-title="' . count($selesai) . '/' . $total_job_desk_posts . '" class="badge bg-warning">Dalam Proses</span>';
+                            }
+                    ?>
+                            <tr>
+                                <!-- Nomor -->
+                                <td><?php echo $number++; ?></td>
+                                <td style="width: 140px; white-space: nowrap">
+                                    <a href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>" class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                                            <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                                            <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+                                        </svg>
+                                        <?php the_title(); ?>
+                                    </a>
+                                </td>
+                                <td>
                                     <?php
-                                    if (isset($post)) {
-                                        $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
-                                        $biaya_transfer = get_post_meta($post->ID, 'biaya_transfer', true);
-                                        $dibayar = get_post_meta($post->ID, 'dibayar', true);
+                                    $tgl = get_post_meta($post->ID, 'tanggal_order', true);
 
-                                        // Jika nilai kosong atau tidak valid, set ke 0
-                                        $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
-                                        $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
-                                        $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
+                                    // Memeriksa apakah $tgl bukan kosong dan merupakan timestamp yang valid
+                                    if (!empty($tgl) && (is_numeric($tgl) || strtotime($tgl) !== false)) {
+                                        // Jika $tgl adalah timestamp Unix
+                                        if (is_numeric($tgl) && strlen($tgl) === 10) {
+                                            $awal = new DateTime();
+                                            $awal->setTimestamp((int)$tgl);
+                                        } else {
+                                            // Jika $tgl adalah format tanggal yang dapat dibaca
+                                            $awal = new DateTime($tgl);
+                                        }
 
-                                        $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
+                                        $akhir = new DateTime();
 
-                                        // Format output
-                                        $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start"
-        title="Dibayar Rp. ' . number_format(intval($dibayar), 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') . '</b>">Rp. ' . number_format(intval($total_biaya), 2, ',', '.') . '</a>' : '';
-                                        $kurang = (intval($dibayar) && intval($total_biaya)) ? 'Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') : '';
-                                        echo $formatted_total_biaya;
-                                        // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
+                                        // Menghitung selisih hari
+                                        $selisih = $awal->diff($akhir);
+                                        $hari = $selisih->d . ' hari';
+                                        $warna = ($selisih->d >= 30) ? 'danger' : ($selisih->d >= 10 ? 'warning' : 'success');
+
+                                        echo '<span data-bs-toggle="tooltip" data-bs-title="' . $hari . '" class="badge bg-' . $warna . '">' . $awal->format("d m Y") . '</span>';
                                     } else {
-                                        echo 'Post tidak ditemukan.';
+                                        echo ''; // Atau bisa ditambahkan pesan untuk tanggal tidak valid
+                                    }
+                                    ?>
+
+                                </td>
+                                <td style="max-width: 200px;">
+                                    <?php
+                                    $customer = get_post_meta($post->ID, 'customer_select', true);
+                                    $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
+                                    echo '<a href="?konsumen=' . $customer . '">';
+                                    echo '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/>
+                                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
+                                </svg>';
+                                    echo $nama . '</a>';
+                                    //echo '<small>('.get_post_meta($customer, '_customer_data_whatsapp', true).')</small>';
+                                    ?>
+                                    <br>
+                                    <small class="text-muted">
+                                        <?php echo get_post_meta($customer, '_customer_data_whatsapp', true); ?>
+                                        <br>
+                                        <?php echo get_post_meta($customer, '_customer_data_alamat', true); ?>
+                                    </small>
+                                </td>
+                                <td>
+                                    <?php
+                                    $pembayaran = get_post_meta($post->ID, 'jenis_pembayaran', true);
+
+                                    if ($pembayaran == 'tunai') {
+                                        echo 'Tunai';
+                                    } else if ($pembayaran == 'transfer') {
+                                        echo 'Transfer';
+                                    } else {
+                                        echo '-';
                                     }
                                     ?>
                                 </td>
-                            <?php endif; ?>
-                            <td>
-                                <?php
-                                echo $progres;
-                                echo isset($job_desk_posts[0]->ID) ? '<br><small>' . get_post_meta($job_desk_posts[0]->ID, 'judul_job_desk', true) : '' . '</small>';
-                                ?>
-                            </td>
-                            <td>
-                                <small>
+                                <?php if (current_user_can('administrator')): ?>
+                                    <td style="min-width:150px;">
+                                        <?php
+                                        if (isset($post)) {
+                                            $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                            $biaya_transfer = get_post_meta($post->ID, 'biaya_transfer', true);
+                                            $dibayar = get_post_meta($post->ID, 'dibayar', true);
+
+                                            // Jika nilai kosong atau tidak valid, set ke 0
+                                            $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
+                                            $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
+                                            $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
+
+                                            $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
+
+                                            // Format output
+                                            $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start"
+            title="Dibayar Rp. ' . number_format(intval($dibayar), 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') . '</b>">Rp. ' . number_format(intval($total_biaya), 2, ',', '.') . '</a>' : '';
+                                            $kurang = (intval($dibayar) && intval($total_biaya)) ? 'Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') : '';
+                                            echo $formatted_total_biaya;
+                                            // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
+                                        } else {
+                                            echo 'Post tidak ditemukan.';
+                                        }
+                                        ?>
+                                    </td>
+                                <?php endif; ?>
+                                <td>
                                     <?php
-                                    $kategori = get_post_meta($customer, '_customer_data_kategori', true);
-                                    echo $kategori ? $kategori : '-';
+                                    echo $progres;
+                                    echo isset($job_desk_posts[0]->ID) ? '<br><small>' . get_post_meta($job_desk_posts[0]->ID, 'judul_job_desk', true) : '' . '</small>';
                                     ?>
+                                </td>
+                                <td>
+                                    <small>
+                                        <?php
+                                        $kategori = get_post_meta($customer, '_customer_data_kategori', true);
+                                        echo $kategori ? $kategori : '-';
+                                        ?>
+                                        <?php
+                                        if ($kategori == 'Bank') {
+                                            echo get_post_meta($customer, '_customer_data_bank', true);
+                                        }
+                                        ?>
+                                    </small>
+                                </td>
+                                <!-- Tampilkan nilai BPHTB -->
+                                <td>
                                     <?php
-                                    if ($kategori == 'Bank') {
-                                        echo get_post_meta($customer, '_customer_data_bank', true);
+                                    $nilai_bphtb = get_post_meta($customer, '_customer_data_pajak_pembeli', true);
+
+                                    if ($nilai_bphtb && is_numeric($nilai_bphtb)) {
+                                        echo 'Rp ' . number_format($nilai_bphtb, 0, ',', '.');
+                                    } else {
+                                        echo '-';
                                     }
-                                    ?>
-                                </small>
-                            </td>
-                            <!-- Tampilkan nilai BPHTB -->
-                            <td>
-                                <?php
-                                $nilai_bphtb = get_post_meta($customer, '_customer_data_pajak_pembeli', true);
-
-                                if ($nilai_bphtb && is_numeric($nilai_bphtb)) {
-                                    echo 'Rp ' . number_format($nilai_bphtb, 0, ',', '.');
-                                } else {
-                                    echo '-';
-                                }
-                                ?><br />
-                            </td>
-                            <!-- Tampilkan nilai SSP -->
-                            <td>
-                                <?php
-                                $nilai_ssp = get_post_meta($customer, '_customer_data_pajak_penjual', true);
-
-                                if ($nilai_ssp && is_numeric($nilai_ssp)) {
-                                    echo 'Rp ' . number_format($nilai_ssp, 0, ',', '.');
-                                } else {
-                                    echo '-';
-                                }
-                                ?><br />
-                            </td>
-                            <td style="white-space: nowrap;">
-                                <?php echo get_post_meta($post->ID, 'layanan', true); ?><br />
-                            </td>
-                            <td style="white-space: nowrap;">
-                                <small>
+                                    ?><br />
+                                </td>
+                                <!-- Tampilkan nilai SSP -->
+                                <td>
                                     <?php
-                                    // Mendapatkan ID penulis berdasarkan ID postingan
-                                    $author_id = get_post_field('post_author', $post->ID);
+                                    $nilai_ssp = get_post_meta($customer, '_customer_data_pajak_penjual', true);
 
-                                    // Mendapatkan nama lengkap penulis berdasarkan ID penulis
-                                    $author_name = get_the_author_meta('display_name', $author_id);
+                                    if ($nilai_ssp && is_numeric($nilai_ssp)) {
+                                        echo 'Rp ' . number_format($nilai_ssp, 0, ',', '.');
+                                    } else {
+                                        echo '-';
+                                    }
+                                    ?><br />
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <?php echo get_post_meta($post->ID, 'layanan', true); ?><br />
+                                </td>
+                                <td style="white-space: nowrap;">
+                                    <small>
+                                        <?php
+                                        // Mendapatkan ID penulis berdasarkan ID postingan
+                                        $author_id = get_post_field('post_author', $post->ID);
 
-                                    // Menampilkan nama lengkap penulis
-                                    echo $author_name;
-                                    ?>
-                                </small>
-                            </td>
-                            <?php if ($status_post != 'selesai'): ?>
-                                <td class="text-end">
-                                    <div class="d-flex justify-content-end">
-                                        <?php if ($status_post == 'aktif'): ?>
-                                            <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
-                                                    <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
-                                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
-                                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
-                                                </svg>
-                                            </a>
+                                        // Mendapatkan nama lengkap penulis berdasarkan ID penulis
+                                        $author_name = get_the_author_meta('display_name', $author_id);
 
-                                            <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
-                                                <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                        // Menampilkan nama lengkap penulis
+                                        echo $author_name;
+                                        ?>
+                                    </small>
+                                </td>
+                                <?php if ($status_post != 'selesai'): ?>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end">
+                                            <?php if ($status_post == 'aktif'): ?>
+                                                <a class="btn btn-info btn-sm text-white <?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Job Desk" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-journal-text" viewBox="0 0 16 16">
+                                                        <path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
+                                                        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                                        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                                                    </svg>
+                                                </a>
+
+                                                <a class="btn btn-info ms-1 btn-sm text-white tooltips" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/?post_id=<?php echo $post->ID; ?>">
+                                                    <span class="<?php echo $class_archive; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                        </svg>
+                                                    </span>
+                                                </a>
+                                            <?php endif; ?>
+                                            <?php if ($status_post == 'arsip'): ?>
+                                                <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?draft_kerja_id=<?php echo $post->ID; ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
+                                                        <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
+                                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                                    </svg>
+                                                </a>
+                                            <?php endif; ?>
+                                            <!-- Button trigger modal -->
+                                            <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
+                                                <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Data">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
+                                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
                                                     </svg>
                                                 </span>
                                             </a>
-                                        <?php endif; ?>
-                                        <?php if ($status_post == 'arsip'): ?>
-                                            <a class="ms-1 btn btn-info btn-sm text-white tooltips <?php echo $class_aktif; ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload" href="<?php echo get_site_url(); ?>/kelola-dokumen/?draft_kerja_id=<?php echo $post->ID; ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-arrow-up" viewBox="0 0 16 16">
-                                                    <path d="M8.5 11.5a.5.5 0 0 1-1 0V7.707L6.354 8.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 7.707z" />
-                                                    <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="view-post-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                                                <?php
+                                                $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
+                                                $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
+                                                $layanan_order = get_post_meta($post->ID, 'layanan', true) ?: '';
+                                                $customer = get_post_meta($post->ID, 'customer_select', true);
+                                                $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
+                                                $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
+                                                $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
+                                                $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
+                                                $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
+                                                $harga_real = preg_replace('/[^0-9]/', '', $harga_real);
+                                                $harga_kesepakatan = get_post_meta($customer, '_customer_data_harga_kesepakatan', true);
+                                                $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
+                                                $alamat = get_post_meta($customer, '_customer_data_alamat', true);
+                                                ?>
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="viewModalLabel"><?php echo '#' . $post->post_title; ?></h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="col-md-12 text-start">
+                                                                    <ul class="list-group">
+                                                                        <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
+                                                                        <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
+                                                                        <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
+                                                                        <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
+                                                                        <!-- Hanya tampil di admin dan keuangan -->
+                                                                        <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
+                                                                            <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
+                                                                            <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
+                                                                            <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
+                                                                        <?php endif; ?>
+                                                                        <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="col-md-12">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="btn btn-danger btn-sm btn-danger text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                                 </svg>
                                             </a>
-                                        <?php endif; ?>
-                                        <!-- Button trigger modal -->
-                                        <a class="ms-1 btn btn-info btn-sm text-white <?php echo $class_aktif; ?>" data-bs-toggle="modal" data-bs-target="#view-post-<?php echo $post->ID; ?>" href="<?php echo get_site_url(); ?>/jobdesk/?post_id=<?php echo $post->ID; ?>">
-                                            <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Data">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-eye" viewBox="0 0 16 16">
-                                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
-                                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="view-post-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+                                        </div>
+                                    </td>
+                                <?php endif; ?>
+                                <?php if ($status_post == 'selesai'): ?>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-success btn-sm btn-success text-white w-100" style="white-space: nowrap;" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalData<?php echo $post->ID; ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-clipboard-data" viewBox="0 0 16 16">
+                                                    <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
+                                                    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+                                                    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+                                                </svg> Lihat
+                                            </a>
+                                        </div>
+                                        <!-- Isi modal -->
+                                        <div class="modal fade" id="exampleModalData<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="exampleModalData" aria-hidden="true">
                                             <?php
                                             $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
                                             $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
@@ -862,116 +928,50 @@ function draft_kerja_shortcode()
                                             $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
                                             $alamat = get_post_meta($customer, '_customer_data_alamat', true);
                                             ?>
-                                            <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-dialog modal-xl modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="viewModalLabel"><?php echo '#' . $post->post_title; ?></h1>
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Data Order #<?php echo $post->post_title; ?></h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-12 text-start">
-                                                                <ul class="list-group">
-                                                                    <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
-                                                                    <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
-                                                                    <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
-                                                                    <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
-                                                                    <!-- Hanya tampil di admin dan keuangan -->
-                                                                    <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
-                                                                        <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
-                                                                        <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
-                                                                        <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
-                                                                    <?php endif; ?>
-                                                                    <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
-                                                                </ul>
-                                                            </div>
-                                                            <div class="col-md-12">
-
-                                                            </div>
+                                                        <?php echo do_shortcode('[tabel-dokumen draft_kerja_id="' . $post->ID . '"]') ?>
+                                                        <div class="text-start">
+                                                            <ul class="list-group">
+                                                                <li class="list-group-item"><b>Tanggal Order: </b> <?php echo $tanggal_order ?: ' -'; ?></li>
+                                                                <li class="list-group-item"><b>Order: </b> <?php echo $layanan_order ?: ' -'; ?></li>
+                                                                <li class="list-group-item"><b>Nama Customer: </b> <?php echo $nama ?: ' -'; ?></li>
+                                                                <li class="list-group-item"><b>Whatsapp: </b> <?php echo $whatsapp ?: ' -'; ?></li>
+                                                                <!-- Hanya tampil di admin dan keuangan -->
+                                                                <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
+                                                                    <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
+                                                                    <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
+                                                                    <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
+                                                                <?php endif; ?>
+                                                                <li class="list-group-item"><b>Alamat: </b> <?php echo $alamat ?: ' -'; ?></li>
+                                                            </ul>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <a class="btn btn-danger btn-sm btn-danger text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </td>
-                            <?php endif; ?>
-                            <?php if ($status_post == 'selesai'): ?>
-                                <td>
-                                    <div class="btn-group">
-                                        <a class="btn btn-success btn-sm btn-success text-white w-100" style="white-space: nowrap;" href="#" data-bs-toggle="modal" data-bs-target="#exampleModalData<?php echo $post->ID; ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-clipboard-data" viewBox="0 0 16 16">
-                                                <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
-                                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
-                                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
-                                            </svg> Lihat
-                                        </a>
-                                    </div>
-                                    <!-- Isi modal -->
-                                    <div class="modal fade" id="exampleModalData<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="exampleModalData" aria-hidden="true">
-                                        <?php
-                                        $tanggal_order = get_post_meta($post->ID, 'tanggal_order', true);
-                                        $tanggal_order = $tanggal_order ? date("d m Y", strtotime($tanggal_order)) : '';
-                                        $layanan_order = get_post_meta($post->ID, 'layanan', true) ?: '';
-                                        $customer = get_post_meta($post->ID, 'customer_select', true);
-                                        $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
-                                        $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
-                                        $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
-                                        $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
-                                        $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
-                                        $harga_real = preg_replace('/[^0-9]/', '', $harga_real);
-                                        $harga_kesepakatan = get_post_meta($customer, '_customer_data_harga_kesepakatan', true);
-                                        $harga_kesepakatan = preg_replace('/[^0-9]/', '', $harga_kesepakatan);
-                                        $alamat = get_post_meta($customer, '_customer_data_alamat', true);
-                                        ?>
-                                        <div class="modal-dialog modal-xl modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Data Order #<?php echo $post->post_title; ?></h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <?php echo do_shortcode('[tabel-dokumen draft_kerja_id="' . $post->ID . '"]') ?>
-                                                    <div class="text-start">
-                                                        <ul class="list-group">
-                                                            <li class="list-group-item"><b>Tanggal Order: </b> <?php echo $tanggal_order ?: ' -'; ?></li>
-                                                            <li class="list-group-item"><b>Order: </b> <?php echo $layanan_order ?: ' -'; ?></li>
-                                                            <li class="list-group-item"><b>Nama Customer: </b> <?php echo $nama ?: ' -'; ?></li>
-                                                            <li class="list-group-item"><b>Whatsapp: </b> <?php echo $whatsapp ?: ' -'; ?></li>
-                                                            <!-- Hanya tampil di admin dan keuangan -->
-                                                            <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
-                                                                <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
-                                                                <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
-                                                                <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
-                                                            <?php endif; ?>
-                                                            <li class="list-group-item"><b>Alamat: </b> <?php echo $alamat ?: ' -'; ?></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            <?php endif; ?>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php
+                        endwhile;
+                        wp_reset_postdata();
+                    else :
+                        ?>
+                        <tr>
+                            <td colspan="13">Tidak ada Order yang ditemukan</td>
                         </tr>
                     <?php
-                    endwhile;
-                    wp_reset_postdata();
-                else :
+                    endif;
                     ?>
-                    <tr>
-                        <td colspan="13">Tidak ada Order yang ditemukan</td>
-                    </tr>
-                <?php
-                endif;
-                ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
     <?php
     // echo '<pre>' . print_r($query, 1) . '</pre>';
