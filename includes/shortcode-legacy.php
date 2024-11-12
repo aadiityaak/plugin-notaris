@@ -473,7 +473,7 @@ function draft_kerja_shortcode()
     <!-- <div class="table-responsive m-3"> -->
     <div class="mb-2 row mx-0">
         <div class="col-sm-2 px-0">
-            <a class="btn btn-success text-white d-block me-2" href="<?php echo get_site_url(); ?>/kelola-konsumen/">Tambah Order</a>
+            <a class="btn btn-success text-white d-block me-2" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/">Tambah Order</a>
         </div>
         <div class="col-sm-3 d-md-flex my-3 my-md-0 px-2">
             <!-- search form -->
