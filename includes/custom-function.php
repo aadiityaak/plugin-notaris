@@ -585,7 +585,7 @@ function jobdesk_shortcode($atts)
         $biaya_transaksi = get_post_meta($get_post_id, 'biaya_transaksi', true);
         $biaya_transfer = get_post_meta($get_post_id, 'biaya_transfer', true);
         $dibayar = get_post_meta($get_post_id, 'dibayar', true);
-        $dibayar = preg_replace('/\D/', '', $dibayar);
+        $dibayar = preg_replace('/[^0-9]/', '', $dibayar) ?? 0;
 
         // Jika nilai kosong atau tidak valid, set ke 0
         $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
@@ -595,9 +595,9 @@ function jobdesk_shortcode($atts)
         $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
         $formatted_total_biaya = 'Rp. ' . number_format($total_biaya, 2, ',', '.');
 
-        $format_dibayar = 'Rp. ' . number_format($dibayar, 2, ',', '.');
+        $format_dibayar = 'Rp. ' . number_format(intval($dibayar), 2, ',', '.');
 
-        $kekurangan = $total_biaya - $dibayar;
+        $kekurangan = intval($total_biaya) - intval($dibayar);
         $format_kekurangan = 'Rp. ' . number_format($kekurangan, 2, ',', '.');
 
     ?>
@@ -712,8 +712,11 @@ function jobdesk_shortcode($atts)
             $job_desk = get_post($job_desk_draft_kerja);
             $customer_id = get_post_meta($job_desk->ID, 'customer_select', true);
             $nama = get_post_meta($customer_id, '_customer_data_nama_lengkap', true);
+            // $d_none = (isset($job_desk->ID) && $job_desk->ID > 0) ? '' : 'd-none'; //sembunyikan jika $job_desk->ID tidak tersedia
+            // delete post jika $job_desk->ID tidak tersedia
+            // wp_delete_post($post_id);
 
-            echo '<tr>';
+            echo '<tr class="">';
             echo '<th scope="row">' . $count++ . '</th>';
             echo '<td><div style="white-space: nowrap;">';
             echo '<a href="?post_id=' . esc_attr($parent) . '">' . esc_html(get_the_title($parent)) . '</a><br>';

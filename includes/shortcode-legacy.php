@@ -735,8 +735,8 @@ function draft_kerja_shortcode()
 
                                         // Format output
                                         $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start"
-        title="Dibayar Rp. ' . number_format($dibayar, 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format(($total_biaya - $dibayar), 2, ',', '.') . '</b>">Rp. ' . number_format($total_biaya, 2, ',', '.') . '</a>' : '';
-                                        $kurang = ($dibayar && $total_biaya) ? 'Rp. ' . number_format(($total_biaya - $dibayar), 2, ',', '.') : '';
+        title="Dibayar Rp. ' . number_format(intval($dibayar), 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') . '</b>">Rp. ' . number_format(intval($total_biaya), 2, ',', '.') . '</a>' : '';
+                                        $kurang = (intval($dibayar) && intval($total_biaya)) ? 'Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') : '';
                                         echo $formatted_total_biaya;
                                         // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
                                     } else {
@@ -1009,6 +1009,7 @@ function data_konsumen()
     $post_per_page = 20;
     // Number increment
     $number = 1;
+    $current_user = wp_get_current_user();
     $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
 
     if (!(current_user_can('administrator') || current_user_can('editor'))) {

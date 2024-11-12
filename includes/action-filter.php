@@ -46,8 +46,8 @@ function delete_post_action()
         }
 
         // Delete the post
+        $post_type = get_post_type($post_id);
         if (wp_delete_post($post_id, true)) {
-            $post_type = get_post_type($post_id);
             if ($post_type === 'draft_kerja') {
                 // Delete all job_desk posts with post meta 'job_desk_draft_kerja' == $post_id
                 $args = array(
@@ -63,8 +63,14 @@ function delete_post_action()
                 );
 
                 $posts = get_posts($args);
-                foreach ($posts as $post) {
-                    wp_delete_post($post->ID, true);
+                if (!empty($posts)) {
+                    foreach ($posts as $post) {
+                        if (!wp_delete_post($post->ID, true)) {
+                            error_log('Gagal menghapus job_desk post ID: ' . $post->ID);
+                        }
+                    }
+                } else {
+                    error_log('Tidak ada job_desk posts yang ditemukan untuk post ID: ' . $post_id);
                 }
             }
             wp_redirect($redirect);
@@ -74,6 +80,7 @@ function delete_post_action()
         }
     }
 }
+
 // Handle post deletion action after admin_post
 add_action('admin_post_delete_post', 'delete_post_action');
 

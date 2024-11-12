@@ -189,6 +189,7 @@ function register_user_profile_metabox()
 function add_customer_data_metabox()
 {
     $prefix = '_customer_data_';
+    $current_user = wp_get_current_user();
     $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
 
     $cmb = new_cmb2_box(array(
@@ -431,12 +432,18 @@ function job_desk_metabox_metabox()
         'name' => esc_html__('Tanggal Mulai', 'text-domain'),
         'id'   => 'job_desk_start',
         'type' => 'text_date',
+        'attributes' => array(
+            'autocomplete' => 'off',
+        )
     ));
 
     $cmb_group->add_field(array(
         'name' => esc_html__('Tanggal Selesai', 'text-domain'),
         'id'   => 'job_desk_end',
         'type' => 'text_date',
+        'attributes' => array(
+            'autocomplete' => 'off',
+        )
     ));
 
     $cmb_group->add_field(array(
