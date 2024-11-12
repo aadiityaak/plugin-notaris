@@ -471,52 +471,54 @@ function draft_kerja_shortcode()
 
     ?>
     <!-- <div class="table-responsive m-3"> -->
-    <div class="mb-2 row mx-0">
-        <div class="col-sm-2 px-0">
-            <a class="btn btn-success text-white d-block me-2" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/">Tambah Order</a>
-        </div>
-        <div class="col-sm-3 d-md-flex my-3 my-md-0 px-2">
-            <!-- search form -->
-            <form action="?" method="get" class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Cari no order" aria-label="Cari" value="<?php echo $s; ?>" name="filter">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-        </div>
-        <div class="col-sm-7 d-flex justify-content-between text-sm-end text-right">
-            <div class="d-flex justify-content-start align-items-center">
-                <?php
-                $konsumen = $_GET['konsumen'] ?? '';
-                $get_kategori = $_GET['kategori'] ?? '';
-                if ($konsumen) {
-                    echo '<b>Filter:</b> Tampilkan data dari <b class="mx-2">' . get_post_meta($konsumen, '_customer_data_nama_lengkap', true) . '</b>';
-                    echo '<a href="?">
+    <div class="container">
+        <div class="mb-2 row mx-0">
+            <div class="col-sm-2 px-0 ps-1">
+                <a class="btn btn-success btn-sm text-white d-block me-1" href="<?php echo get_site_url(); ?>/kelola-prosses-kerja/">Tambah Order</a>
+            </div>
+            <div class="col-sm-3 d-md-flex my-3 my-md-0 px-1">
+                <!-- search form -->
+                <form action="?" method="get" class="d-flex">
+                    <input class="form-control form-control-sm me-2" type="search" placeholder="Cari no order" aria-label="Cari" value="<?php echo $s; ?>" name="filter">
+                    <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="col-sm-7 pe-1 d-flex justify-content-between text-sm-end text-right">
+                <div class="d-flex justify-content-start align-items-center">
+                    <?php
+                    $konsumen = $_GET['konsumen'] ?? '';
+                    $get_kategori = $_GET['kategori'] ?? '';
+                    if ($konsumen) {
+                        echo '<b>Filter:</b> Tampilkan data dari <b class="mx-2">' . get_post_meta($konsumen, '_customer_data_nama_lengkap', true) . '</b>';
+                        echo '<a href="?">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                             <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
                             </svg>
                         </a>';
-                } elseif ($get_kategori) {
-                    // Mendapatkan nama kategori berdasarkan ID
-                    $kategori = get_term_by('id', $get_kategori, 'konsumen_kategori');
+                    } elseif ($get_kategori) {
+                        // Mendapatkan nama kategori berdasarkan ID
+                        $kategori = get_term_by('id', $get_kategori, 'konsumen_kategori');
 
-                    if ($kategori && !is_wp_error($kategori)) {
-                        echo '<b>Filter:</b> Tampilkan data dari kategori <b>' . esc_html($kategori->name) . '</b>';
-                        echo '<a href="?">
+                        if ($kategori && !is_wp_error($kategori)) {
+                            echo '<b>Filter:</b> Tampilkan data dari kategori <b>' . esc_html($kategori->name) . '</b>';
+                            echo '<a href="?">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
                                 </svg>
                             </a>';
-                    } else {
-                        echo '<b>Filter:</b> Kategori tidak ditemukan.';
+                        } else {
+                            echo '<b>Filter:</b> Kategori tidak ditemukan.';
+                        }
                     }
-                }
-                ?>
-            </div>
-            <div class="d-flex">
-                <a href="?status_post=aktif" type="button" class="btn text-white <?php echo $class_aktif; ?>">Aktif</a>
-                <a href="?status_post=arsip" type="button" class="btn ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
-                <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
+                    ?>
+                </div>
+                <div class="d-flex">
+                    <a href="?status_post=aktif" type="button" class="btn btn-sm text-white <?php echo $class_aktif; ?>">Aktif</a>
+                    <a href="?status_post=arsip" type="button" class="btn btn-sm ms-1 text-white <?php echo $class_archive; ?>">Arsip</a>
+                    <a href="?status_post=selesai" type="button" class="btn btn-sm ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
+                </div>
             </div>
         </div>
     </div>
@@ -525,14 +527,14 @@ function draft_kerja_shortcode()
             <thead>
                 <tr>
                     <th class="bg-blue text-white" scope="col">No.</th>
-                    <th class="bg-blue text-white" scope="col">No Order</th>
+                    <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">No Order</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 120px;">Tgl Order</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 200px;">Pelanggan</th>
                     <th class="bg-blue text-white" scope="col" style="min-width: 140px;">Pembayaran</th>
                     <!-- Sembunyikan biaya hanya tampil pada admin saja selain admin tidak ditampilkan  -->
                     <!-- Tampil hanya di admin dan keuangan -->
                     <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
-                        <th class="bg-blue text-white" scope="col">Biaya Notaris</th>
+                        <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Biaya Notaris</th>
                     <?php endif; ?>
                     <th class="bg-blue text-white" scope="col">Progres</th>
                     <th class="bg-blue text-white" scope="col">Kategori</th>
