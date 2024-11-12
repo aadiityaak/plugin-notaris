@@ -963,7 +963,7 @@ function draft_kerja_shortcode()
                 else :
                     ?>
                     <tr>
-                        <td colspan="11">Tidak ada Order yang ditemukan</td>
+                        <td colspan="13">Tidak ada Order yang ditemukan</td>
                     </tr>
                 <?php
                 endif;

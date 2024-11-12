@@ -33,20 +33,40 @@ function delete_post_action()
 {
     if (isset($_GET['action']) && $_GET['action'] === 'delete_post' && isset($_GET['post_id'])) {
         $post_id = intval($_GET['post_id']);
-        $redirect = $_GET['redirect'] ?? get_site_url();
+        $redirect = isset($_GET['redirect']) ? esc_url_raw($_GET['redirect']) : get_site_url();
 
-        // Memeriksa apakah pengguna saat ini adalah administrator
+        // Check if the current user is an administrator
         if (!current_user_can('administrator')) {
             wp_die('Maaf, Anda tidak memiliki izin untuk melakukan tindakan ini.');
         }
 
-        // Memeriksa apakah nonce valid
+        // Check for a valid nonce
         if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'delete_post_' . $post_id)) {
             wp_die('Permintaan tidak valid.');
         }
 
-        // Hapus postingan
+        // Delete the post
         if (wp_delete_post($post_id, true)) {
+            $post_type = get_post_type($post_id);
+            if ($post_type === 'draft_kerja') {
+                // Delete all job_desk posts with post meta 'job_desk_draft_kerja' == $post_id
+                $args = array(
+                    'post_type' => 'job_desk',
+                    'posts_per_page' => -1,
+                    'meta_query' => array(
+                        array(
+                            'key' => 'job_desk_draft_kerja',
+                            'value' => $post_id,
+                            'compare' => '='
+                        )
+                    )
+                );
+
+                $posts = get_posts($args);
+                foreach ($posts as $post) {
+                    wp_delete_post($post->ID, true);
+                }
+            }
             wp_redirect($redirect);
             exit;
         } else {
@@ -54,8 +74,7 @@ function delete_post_action()
         }
     }
 }
-
-// Menangani aksi penghapusan postingan setelah admin_post
+// Handle post deletion action after admin_post
 add_action('admin_post_delete_post', 'delete_post_action');
 
 

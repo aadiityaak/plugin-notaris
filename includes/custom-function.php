@@ -706,7 +706,8 @@ function jobdesk_shortcode($atts)
             $parent = get_post_meta($post_id, 'job_desk_draft_kerja', true);
             $user_info = get_userdata($id_staff);
             $firt_name = $user_info->first_name ?? '';
-            $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/jobdesk/&post_id=' . $parent), 'delete_post_' . $post_id) : '';
+            // hapus jobdesk
+            $delete_url = ($post_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . esc_url(get_site_url() . '/jobdesk/') . '&post_id=' . $post_id), 'delete_post_' . $post_id) : '';
             $job_desk_draft_kerja = get_post_meta($post_id, 'job_desk_draft_kerja', true);
             $job_desk = get_post($job_desk_draft_kerja);
             $customer_id = get_post_meta($job_desk->ID, 'customer_select', true);
