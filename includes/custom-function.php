@@ -672,12 +672,12 @@ function jobdesk_shortcode($atts)
 
         echo '<div class="container">';
     ?>
-        <div class="d-flex mb-3">
+        <div class="d-md-flex mb-3">
             <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-primary text-white">Semua</a>
             <a href="?status_post=aktif" type="button" class="btn btn-success text-white mx-2">Aktif</a>
             <a href="?status_post=selesai" type="button" class="btn text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
             <!-- Form Pencarian -->
-            <form action="" method="get" class="ms-auto">
+            <form action="" method="get" class="ms-auto mt-2 mt-md-0">
                 <div class="input-group">
                     <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
                     <input type="text" name="search" class="form-control rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
