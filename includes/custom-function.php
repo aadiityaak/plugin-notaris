@@ -672,7 +672,7 @@ function jobdesk_shortcode($atts)
 
         echo '<div class="container">';
     ?>
-        <div class="d-md-flex mb-3">
+        <div class="d-md-flex mb-2">
             <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-primary text-white">Semua</a>
             <a href="?status_post=aktif" type="button" class="btn btn-success text-white mx-2">Aktif</a>
             <a href="?status_post=selesai" type="button" class="btn text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>

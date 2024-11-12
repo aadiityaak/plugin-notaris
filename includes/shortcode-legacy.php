@@ -522,7 +522,7 @@ function draft_kerja_shortcode()
             </div>
         </div>
     </div>
-    <div class="table-responsive m-3">
+    <div class="table-responsive m-3 mt-1">
         <table class="table table-striped">
             <thead>
                 <tr>
