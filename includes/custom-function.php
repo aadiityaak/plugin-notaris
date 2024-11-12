@@ -673,7 +673,7 @@ function jobdesk_shortcode($atts)
             <form action="" method="get" class="ms-auto">
                 <div class="input-group">
                     <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
-                    <input type="text" name="search" class="form-control" placeholder="Cari id..." value="<?php echo $search; ?>">
+                    <input type="text" name="search" class="form-control rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
                     <button type="submit" class="btn btn-primary text-white">Cari</button>
                 </div>
             </form>
