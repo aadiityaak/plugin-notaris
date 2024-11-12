@@ -551,20 +551,26 @@ function jobdesk_shortcode($atts)
         'posts_per_page' => $post_per_page,
     );
 
-    if ($job_desk_status == 'selesai') {
-        $query_args['meta_query'][] = array(
-            'key' => 'job_desk_status',
-            'value' => 'Selesai',
-            'compare' => '='
-        );
-    } else if ($job_desk_status != 'selesai') {
-        $query_args['meta_query'][] = array(
-            'key' => 'job_desk_status',
-            'value' => 'Selesai',
-            'compare' => '!='
-        );
+    // Filter dinamis berdasarkan $job_desk_status
+    if (!empty($job_desk_status)) {
+        if ($job_desk_status == 'aktif') {
+            $query_args['meta_query'] = array(
+                array(
+                    'key' => 'job_desk_status',
+                    'value' => 'Selesai',
+                    'compare' => '!='              // Menampilkan hanya yang tidak selesai
+                )
+            );
+        } else {
+            $query_args['meta_query'] = array(
+                array(
+                    'key' => 'job_desk_status',
+                    'value' => $job_desk_status,
+                    'compare' => '='               // Menampilkan status sesuai $job_desk_status
+                )
+            );
+        }
     }
-    echo $job_desk_status;
 
     // if administrator
     if (!current_user_can('administrator') && empty($get_post_id)) {
@@ -667,8 +673,9 @@ function jobdesk_shortcode($atts)
         echo '<div class="container">';
     ?>
         <div class="d-flex mb-3">
-            <a href="?status_post=aktif" type="button" class="btn btn-primary text-white ">Aktif</a>
-            <a href="?status_post=selesai" type="button" class="btn ms-1 text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
+            <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-primary text-white">Semua</a>
+            <a href="?status_post=aktif" type="button" class="btn btn-success text-white mx-2">Aktif</a>
+            <a href="?status_post=selesai" type="button" class="btn text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
             <!-- Form Pencarian -->
             <form action="" method="get" class="ms-auto">
                 <div class="input-group">
