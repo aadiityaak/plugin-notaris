@@ -7,7 +7,7 @@ function tandai_selesai()
   $status = $_POST['status'] ?? '';
 
   if ($post_id) {
-    update_post_meta($post_id, 'status', $status);
+    update_post_meta($post_id, 'status_post', $status);
     wp_send_json(array(
       'status' => 200,
       'message' => 'Update Berhasil'

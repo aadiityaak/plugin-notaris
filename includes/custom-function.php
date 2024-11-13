@@ -678,14 +678,14 @@ function jobdesk_shortcode($atts)
                 <a href="?status_post=aktif" type="button" class="btn btn-sm btn-success text-white mx-2">Aktif</a>
                 <a href="?status_post=selesai" type="button" class="btn btn-sm text-white btn-primary">Selesai</a>
                 <?php } else {
-                $status_parent = get_post_meta($get_post_id, 'status', true);
+                $status_parent = get_post_meta($get_post_id, 'status_post', true);
                 if ($status_parent != 'selesai') {
                 ?>
                     <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="selesai" data-id="<?php echo $get_post_id; ?>">Tandai Selesai</a>
                 <?php
                 } else {
                 ?>
-                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="proses" data-id="<?php echo $get_post_id; ?>">Tandai Belum Selesai</a>
+                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="aktif" data-id="<?php echo $get_post_id; ?>">Tandai Belum Selesai</a>
             <?php
                 }
             } ?>
