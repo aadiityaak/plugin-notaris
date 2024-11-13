@@ -673,15 +673,28 @@ function jobdesk_shortcode($atts)
         echo '<div class="container">';
     ?>
         <div class="d-md-flex mb-2">
-            <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-primary text-white">Semua</a>
-            <a href="?status_post=aktif" type="button" class="btn btn-success text-white mx-2">Aktif</a>
-            <a href="?status_post=selesai" type="button" class="btn text-white btn-danger <?php echo $class_selesai; ?>">Selesai</a>
+            <?php if (!isset($_GET['post_id'])) { ?>
+                <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-sm btn-primary text-white">Semua</a>
+                <a href="?status_post=aktif" type="button" class="btn btn-sm btn-success text-white mx-2">Aktif</a>
+                <a href="?status_post=selesai" type="button" class="btn btn-sm text-white btn-primary">Selesai</a>
+                <?php } else {
+                $status_parent = get_post_meta($get_post_id, 'status', true);
+                if ($status_parent != 'selesai') {
+                ?>
+                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="selesai" data-id="<?php echo $get_post_id; ?>">Tandai Selesai</a>
+                <?php
+                } else {
+                ?>
+                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="proses" data-id="<?php echo $get_post_id; ?>">Tandai Belum Selesai</a>
+            <?php
+                }
+            } ?>
             <!-- Form Pencarian -->
             <form action="" method="get" class="ms-auto mt-2 mt-md-0">
                 <div class="input-group">
                     <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
-                    <input type="text" name="search" class="form-control rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
-                    <button type="submit" class="btn btn-primary text-white">Cari</button>
+                    <input type="text" name="search" class="form-control form-control-sm rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
+                    <button type="submit" class="btn btn-sm btn-primary text-white">Cari</button>
                 </div>
             </form>
         </div>
@@ -793,6 +806,41 @@ function jobdesk_shortcode($atts)
                 var button = $(event.relatedTarget); // Button that triggered the modal
                 var url = button.data('url'); // Extract info from data-* attributes
                 var modal = $('#staticBackdrop .modal-body').html('<iframe  style="width:100%; height:70vh;" src="' + url + '"></iframe>');
+            });
+            $('.tandai-selesai').on('click', function(e) {
+                e.preventDefault();
+                var button = $(this);
+                // loading
+                button.html('<span class="spinner-border spinner-border-sm text-white" role="status" aria-hidden="true"></span> Loading...');
+                // wp ajax update post_meta job_desk menjadi selesai
+                $.ajax({
+                    url: sweetaddons.ajaxurl, // ajaxurl sudah ada di WordPress, tidak perlu `admin_url`
+                    type: 'POST',
+                    data: {
+                        action: 'tandai_selesai',
+                        post_id: button.data('id'),
+                        status: button.data('status')
+                    },
+                    success: function(data) {
+                        if (data.status === 200) {
+                            button.html('Update Berhasil!');
+                            // delay untuk kembali ke tulisan 'Tandai Selesai'
+                            setTimeout(function() {
+                                if (status == 'selesai') {
+                                    button.html('Tandai Selesai');
+                                } else {
+                                    button.html('Tandai Belum Selesai');
+                                }
+
+                            }, 3000);
+                        } else {
+                            button.html('Error');
+                        }
+                    },
+                    error: function() {
+                        button.html('Error');
+                    }
+                });
             });
         });
     </script>

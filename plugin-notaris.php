@@ -87,6 +87,7 @@ register_deactivation_hook(__FILE__, 'deactivate_custom_plugin');
 require plugin_dir_path(__FILE__) . 'includes/class-custom-plugin.php';
 require plugin_dir_path(__FILE__) . 'includes/shortcode-legacy.php';
 require plugin_dir_path(__FILE__) . 'includes/action-filter.php';
+require plugin_dir_path(__FILE__) . 'includes/ajax.php';
 
 /**
  * Begins execution of the plugin.
@@ -104,4 +105,3 @@ function run_custom_plugin()
     $plugin->run();
 }
 run_custom_plugin();
-
