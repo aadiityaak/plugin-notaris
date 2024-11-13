@@ -225,7 +225,7 @@ function display_user_list()
     if (empty($users)) {
         echo 'Tidak ada pengguna yang ditemukan.';
     } else {
-        echo '<button type="button" class="btn btn-success btn-sm text-white mb-2" data-bs-toggle="modal" data-bs-target="#tambahUser">
+        echo '<button type="button" class="btn btn-success btn-sm text-white mb-0" data-bs-toggle="modal" data-bs-target="#tambahUser">
             Tambah User
         </button>';
         // Memulai pembentukan tabel
