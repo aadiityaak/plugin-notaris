@@ -35,11 +35,13 @@ function pekerjaan_metabox_metabox()
         'type'             => 'text_date',
         'attributes' => array('autocomplete' => 'off'),
     ));
+
     // $cmb_group->add_field(array(
     //     'name'             => 'Layanan',
     //     'id'               => $prefix . 'layanan',
     //     'type'             => 'text',
     // ));
+
     $cmb_group->add_field(array(
         'name'             => 'Biaya Notaris',
         'id'               => $prefix . 'biaya_transaksi',

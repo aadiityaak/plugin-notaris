@@ -766,31 +766,62 @@ function draft_kerja_shortcode()
                                     </small>
                                 </td>
                                 <!-- Tampilkan nilai BPHTB -->
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <?php
                                     $nilai_bphtb = get_post_meta($customer, '_customer_data_pajak_pembeli', true);
 
-                                    if ($nilai_bphtb && is_numeric($nilai_bphtb)) {
-                                        echo 'Rp ' . number_format($nilai_bphtb, 0, ',', '.');
+                                    // Periksa apakah nilai sudah memiliki "Rp"
+                                    if (strpos($nilai_bphtb, 'Rp') !== false) {
+                                        // Jika sudah ada "Rp", tampilkan langsung
+                                        echo $nilai_bphtb;
                                     } else {
-                                        echo '-';
+                                        // Jika tidak ada "Rp", tambahkan dan format sebagai Rupiah
+                                        $nilai_bphtb = preg_replace('/[^\d]/', '', $nilai_bphtb); // Hapus karakter non-angka
+                                        if (is_numeric($nilai_bphtb) && $nilai_bphtb > 0) {
+                                            echo 'Rp ' . number_format($nilai_bphtb, 0, ',', '.');
+                                        } else {
+                                            echo '-';
+                                        }
                                     }
                                     ?><br />
                                 </td>
+
                                 <!-- Tampilkan nilai SSP -->
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <?php
                                     $nilai_ssp = get_post_meta($customer, '_customer_data_pajak_penjual', true);
 
-                                    if ($nilai_ssp && is_numeric($nilai_ssp)) {
-                                        echo 'Rp ' . number_format($nilai_ssp, 0, ',', '.');
+                                    // Periksa apakah nilai sudah memiliki "Rp"
+                                    if (strpos($nilai_ssp, 'Rp') !== false) {
+                                        // Jika sudah ada "Rp", tampilkan langsung
+                                        echo $nilai_ssp;
                                     } else {
-                                        echo '-';
+                                        // Jika tidak ada "Rp", tambahkan dan format sebagai Rupiah
+                                        $nilai_ssp = preg_replace('/[^\d]/', '', $nilai_ssp); // Hapus karakter non-angka
+                                        if (is_numeric($nilai_ssp) && $nilai_ssp > 0) {
+                                            echo 'Rp ' . number_format($nilai_ssp, 0, ',', '.');
+                                        } else {
+                                            echo '-';
+                                        }
                                     }
                                     ?><br />
                                 </td>
                                 <td style="white-space: nowrap;">
-                                    <?php echo get_post_meta($post->ID, 'layanan', true); ?><br />
+                                    <?php
+                                    $layanan = get_post_meta($post->ID, 'layanan', true);
+
+                                    // Periksa nilai layanan
+                                    if (!empty($layanan)) {
+                                        if ($layanan == 'Penjualan') {
+                                            echo 'Penjualan';
+                                        } else {
+                                            echo $layanan; // Tampilkan nilai lainnya
+                                        }
+                                    } else {
+                                        echo '-'; // Tampilkan pesan default jika kosong
+                                    }
+                                    ?>
+                                    <br />
                                 </td>
                                 <td style="white-space: nowrap;">
                                     <small>
