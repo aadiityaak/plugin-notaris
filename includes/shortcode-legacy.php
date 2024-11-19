@@ -306,7 +306,7 @@ function display_user_list()
             }
             $pic_staff = get_user_meta($user_id, 'pic_staff', true) ?? '-';
             $no_telpon_staff = get_user_meta($user_id, 'no_telpon_staff', true) ?? '-';
-            $user_role = $user_data->roles[0] ?? '-';
+            $user_role = reset($user_data->roles) ?? '-';
             $address = get_user_meta($user_id, 'address', true) ?? '-';
             $url_edit = admin_url('user-edit.php?user_id=' . $user_id);
             $status = get_user_meta($user_id, 'status', true) ?? '-';
@@ -395,8 +395,7 @@ function display_user_list()
                                                 <li class="list-group-item">
                                                     <div class="">
                                                         <div class="fw-bold">User Role</div>
-                                                        <?php echo $user->roles[0];
-                                                        print_r($user->roles); ?>
+                                                        <?php echo $user->roles[0]; ?>
 
                                                     </div>
                                                 </li>
