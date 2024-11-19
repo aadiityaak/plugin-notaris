@@ -533,6 +533,23 @@ function jobdesk_shortcode($atts)
     $post_per_page = 20;
     $get_post_id = $_GET['post_id'] ?? '';
 
+    // Ambil list id order berdasarkan data_pelanggan
+    $data_pelanggan = $_GET['data_pelanggan'] ?? '';
+    $args = [
+        'post_type'      => 'draft_kerja',
+        'posts_per_page' => -1, // Ambil semua post
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+        // 'fields'         => 'customer_select',
+        'meta_key'       => 'customer_select',
+        'meta_value'     => $data_pelanggan,
+    ];
+
+    $draft_kerja_in = get_posts($args);
+    $draft_kerja_ids = array();
+    foreach ($draft_kerja_in as $draft_kerja) {
+        $draft_kerja_ids[] = $draft_kerja->ID;
+    }
     // Pengaturan atribut shortcode
     $atts = shortcode_atts(array(
         'posts_per_page' => 20,
@@ -550,6 +567,16 @@ function jobdesk_shortcode($atts)
         's' => $search,
         'posts_per_page' => $post_per_page,
     );
+
+    if (!empty($data_pelanggan)) {
+        $query_args['meta_query'] = array(
+            array(
+                'key' => 'job_desk_draft_kerja',
+                'value' => $draft_kerja_ids,
+                'compare' => 'IN'
+            )
+        );
+    }
 
     // Filter dinamis berdasarkan $job_desk_status
     if (!empty($job_desk_status)) {
@@ -672,31 +699,70 @@ function jobdesk_shortcode($atts)
 
         echo '<div class="container">';
     ?>
-        <div class="d-md-flex mb-2">
-            <?php if (!isset($_GET['post_id'])) { ?>
-                <a href="<?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-sm btn-primary text-white">Semua</a>
-                <a href="?status_post=aktif" type="button" class="btn btn-sm btn-success text-white mx-2">Aktif</a>
-                <a href="?status_post=selesai" type="button" class="btn btn-sm text-white btn-primary">Selesai</a>
-                <?php } else {
-                $status_parent = get_post_meta($get_post_id, 'status_post', true);
-                if ($status_parent != 'selesai') {
-                ?>
-                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="selesai" data-id="<?php echo $get_post_id; ?>">Tandai Selesai</a>
+        <div class="d-md-flex mb-2 justify-content-between">
+            <div class="d-flex">
+                <?php if (!isset($_GET['post_id'])) { ?>
+                    <a href=" <?php echo get_site_url(); ?>/jobdesk" type="button" class="btn btn-sm btn-primary text-white">Semua</a>
+                    <a href="?status_post=aktif" type="button" class="btn btn-sm btn-success text-white mx-2">Aktif</a>
+                    <a href="?status_post=selesai" type="button" class="btn btn-sm text-white btn-primary">Selesai</a>
+                    <?php } else {
+                    $status_parent = get_post_meta($get_post_id, 'status_post', true);
+                    if ($status_parent != 'selesai') {
+                    ?>
+                        <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="selesai" data-id="<?php echo $get_post_id; ?>">Tandai Selesai</a>
+                    <?php
+                    } else {
+                    ?>
+                        <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="aktif" data-id="<?php echo $get_post_id; ?>">Tandai Belum Selesai</a>
                 <?php
-                } else {
-                ?>
-                    <a type="button" class="btn btn-sm text-white btn-primary tandai-selesai" data-status="aktif" data-id="<?php echo $get_post_id; ?>">Tandai Belum Selesai</a>
-            <?php
-                }
-            } ?>
-            <!-- Form Pencarian -->
-            <form action="" method="get" class="ms-auto mt-2 mt-md-0">
-                <div class="input-group">
-                    <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
-                    <input type="text" name="search" class="form-control form-control-sm rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
-                    <button type="submit" class="btn btn-sm btn-primary text-white">Cari</button>
-                </div>
-            </form>
+                    }
+                } ?>
+            </div>
+            <!-- Form filter select -->
+            <div class="d-flex">
+                <?php
+                // Ambil semua post dengan post_type 'data_pelanggan'
+                $args = [
+                    'post_type'      => 'data_pelanggan',
+                    'posts_per_page' => -1, // Ambil semua post
+                    'orderby'        => 'title',
+                    'order'          => 'ASC',
+                ];
+
+                $data_pelanggan_posts = get_posts($args);
+
+                if (!empty($data_pelanggan_posts)) : ?>
+                    <select class="form-select form-select-sm form-control" onchange="redirectToPost(this)">
+                        <option class="form-control" value="">-- Pilih Data Pelanggan --</option>
+                        <?php foreach ($data_pelanggan_posts as $post) :
+                            $selected = isset($_GET['data_pelanggan']) && $_GET['data_pelanggan'] == $post->ID ? 'selected' : ''; ?>
+                            <option value="<?php echo esc_url(add_query_arg('data_pelanggan', $post->ID, home_url() . '/jobdesk')); ?>" <?php echo $selected; ?>>
+                                <?php echo esc_html($post->post_title); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <script>
+                        function redirectToPost(select) {
+                            const url = select.value;
+                            if (url) {
+                                window.location.href = url;
+                            }
+                        }
+                    </script>
+                <?php else : ?>
+                    <p>Tidak ada data pelanggan ditemukan.</p>
+                <?php endif; ?>
+
+                <!-- Form Pencarian -->
+                <form action="" method="get" class="ms-auto mt-2 ms-md-2 mt-md-0">
+                    <div class="input-group">
+                        <input type="hidden" name="status_post" value="<?php echo $status_post; ?>">
+                        <input type="text" name="search" class="form-control form-control-sm rounded-start" placeholder="Cari id..." value="<?php echo $search; ?>">
+                        <button type="submit" class="btn btn-sm btn-primary text-white">Cari</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <?php
         echo '<div class="table-responsive">';
