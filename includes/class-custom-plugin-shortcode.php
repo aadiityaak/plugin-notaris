@@ -101,18 +101,18 @@ class Custom_Plugin_Shortcode
 
 
         // Role Pengguna
-        $cmb_user->add_field(array(
-            'name'    => 'Role Pengguna',
-            'id'      => 'user_role',
-            'type'    => 'select',
-            'default' => $user_role,
-            'options' => array(
-                'superadmin' => 'Superadmin',
-                'administrator' => 'Administrator',
-                'editor'        => 'Editor',
-            ),
-            'default' => 'subscriber',
-        ));
+        // $cmb_user->add_field(array(
+        //     'name'    => 'Role Pengguna',
+        //     'id'      => 'user_role',
+        //     'type'    => 'select',
+        //     'default' => $user_role,
+        //     'options' => array(
+        //         'superadmin' => 'Superadmin',
+        //         'administrator' => 'Administrator',
+        //         'editor'        => 'Editor',
+        //     ),
+        //     'default' => 'subscriber',
+        // ));
 
         // Alamat
         $cmb_user->add_field(array(
@@ -290,7 +290,7 @@ class Custom_Plugin_Shortcode
                 'user_login' => $sanitized_values['user_login'],
                 'user_email' => $sanitized_values['email'],
                 'first_name' => $sanitized_values['full_name'],
-                'role'       => $sanitized_values['user_role'],
+                // 'role'       => $sanitized_values['user_role'],
             );
 
             $user_id = wp_update_user($userdata);
@@ -301,7 +301,7 @@ class Custom_Plugin_Shortcode
                 'user_email' => $sanitized_values['email'],
                 'user_pass'  => $sanitized_values['password'],
                 'first_name' => $sanitized_values['full_name'],
-                'role'       => $sanitized_values['user_role'],
+                'role'       => 'editor',
             );
 
             $user_id = wp_insert_user($userdata);

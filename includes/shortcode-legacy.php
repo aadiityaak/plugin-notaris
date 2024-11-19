@@ -354,8 +354,8 @@ function display_user_list()
                                     Apakah Anda yakin ingin menghapus pengguna ini?
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <a href="<?php echo ($user_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_user&user_id=' . $user_id), 'delete_user_' . $user_id) : ''; ?>" class="btn btn-danger">Hapus</a>
+                                    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Batal</button>
+                                    <a href="<?php echo ($user_id > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_user&user_id=' . $user_id), 'delete_user_' . $user_id) : ''; ?>" class="btn btn-danger text-white">Hapus</a>
                                 </div>
                             </div>
                         </div>
@@ -395,7 +395,9 @@ function display_user_list()
                                                 <li class="list-group-item">
                                                     <div class="">
                                                         <div class="fw-bold">User Role</div>
-                                                        <?php echo $user->roles[0]; ?>
+                                                        <?php echo $user->roles[0];
+                                                        print_r($user->roles); ?>
+
                                                     </div>
                                                 </li>
                                                 <li class="list-group-item">
@@ -884,6 +886,7 @@ function draft_kerja_shortcode()
                                                 $customer = get_post_meta($post->ID, 'customer_select', true);
                                                 $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
                                                 $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
+                                                $pembayaran = get_post_meta($customer, '_customer_data_pembayaran', true);
                                                 $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
                                                 $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
                                                 $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
@@ -903,12 +906,34 @@ function draft_kerja_shortcode()
                                                                 <div class="col-md-12 text-start">
                                                                     <ul class="list-group">
                                                                         <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
-                                                                        <li class="list-group-item"><b>Order : </b><?php echo $layanan_order; ?></li>
                                                                         <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
                                                                         <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
+                                                                        <li class="list-group-item"><b>Pembayaran : </b> <?php echo $pembayaran; ?></li>
                                                                         <!-- Hanya tampil di admin dan keuangan -->
                                                                         <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
-                                                                            <li class="list-group-item"><b>Biaya Notaris: </b> Rp <?php echo $biaya_transaksi ? number_format($biaya_transaksi, 0, ',', '.') : '-'; ?></li>
+                                                                            <li class="list-group-item"><b>Biaya Notaris: </b>
+                                                                                <?php
+                                                                                if (isset($post)) {
+                                                                                    $biaya_transaksi = get_post_meta($post->ID, 'biaya_transaksi', true);
+                                                                                    $biaya_transfer = get_post_meta($post->ID, 'biaya_transfer', true);
+                                                                                    $dibayar = get_post_meta($post->ID, 'dibayar', true);
+
+                                                                                    // Jika nilai kosong atau tidak valid, set ke 0
+                                                                                    $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
+                                                                                    $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
+                                                                                    $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
+
+                                                                                    $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
+
+                                                                                    // Format output
+                                                                                    $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start" title="Dibayar Rp. ' . number_format(intval($dibayar), 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') . '</b>">Rp. ' . number_format(intval($total_biaya), 2, ',', '.') . '</a>' : '';
+                                                                                    $kurang = (intval($dibayar) && intval($total_biaya)) ? 'Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') : '';
+                                                                                    echo $formatted_total_biaya;
+                                                                                    // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
+                                                                                } else {
+                                                                                    echo 'Post tidak ditemukan.';
+                                                                                }
+                                                                                ?></li>
                                                                             <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
                                                                             <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
                                                                         <?php endif; ?>
@@ -923,11 +948,32 @@ function draft_kerja_shortcode()
                                                     </div>
                                                 </div>
                                             </div>
-                                            <a class="btn btn-danger btn-sm btn-danger text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
+                                            <!-- Tombol Hapus -->
+                                            <a class="btn btn-danger btn-sm text-white ms-1" data-bs-toggle="modal" data-bs-target="#deleteModal-<?php echo $post->ID; ?>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                                 </svg>
                                             </a>
+
+                                            <!-- Modal Konfirmasi -->
+                                            <div class="modal fade" id="deleteModal-<?php echo $post->ID; ?>" tabindex="-1" aria-labelledby="deleteModalLabel-<?php echo $post->ID; ?>" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="deleteModalLabel-<?php echo $post->ID; ?>">Konfirmasi Hapus</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start">
+                                                            Apakah Anda yakin ingin menghapus data ini?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Batal</button>
+                                                            <a class="btn btn-danger text-white" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/prosses-kerja/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">Hapus</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </td>
                                 <?php endif; ?>
@@ -1315,11 +1361,51 @@ function data_konsumen()
                                             <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0M7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0" />
                                         </svg>
                                     </a>
-                                    <a class="btn btn-danger btn-sm text-white ms-1" href="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/data-konsumen/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
+                                    <!-- Tombol Hapus -->
+                                    <a class="btn btn-danger btn-sm text-white ms-1" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                        data-delete-url="<?php echo ($post->ID > 0) ? wp_nonce_url(admin_url('admin-post.php?action=delete_post&redirect=' . get_site_url() . '/data-konsumen/&post_id=' . $post->ID), 'delete_post_' . $post->ID) : ''; ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5.5 0 0 1 6.5 0h3A1.5.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                                         </svg>
                                     </a>
+
+                                    <!-- Modal Konfirmasi -->
+                                    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Hapus</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    Apakah Anda yakin ingin menghapus data ini?
+                                                    <br> Tindakan ini tidak dapat dibatalkan.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Batal</button>
+                                                    <a id="deleteConfirmButton" href="#" class="btn btn-danger text-white">Hapus</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Script untuk Modal -->
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            // Ambil elemen tombol Hapus
+                                            var deleteModal = document.getElementById('confirmDeleteModal');
+                                            deleteModal.addEventListener('show.bs.modal', function(event) {
+                                                // Tombol yang memicu modal
+                                                var button = event.relatedTarget;
+                                                // URL untuk penghapusan
+                                                var deleteUrl = button.getAttribute('data-delete-url');
+                                                // Atur href tombol "Hapus" di modal
+                                                var deleteConfirmButton = document.getElementById('deleteConfirmButton');
+                                                deleteConfirmButton.setAttribute('href', deleteUrl);
+                                            });
+                                        });
+                                    </script>
+
                                 </div>
                             </td>
                         </tr>
