@@ -1151,21 +1151,19 @@ add_action('admin_menu', 'add_settings_pelanggan_submenu');
 function render_settings_pelanggan_page()
 {
     // Simpan data jika form dikirim
-    if (isset($_POST['save_settings'])) {
-        $bank = isset($_POST['pelanggan_bank']) ? serialize($_POST['pelanggan_bank']) : [];
-        $pekerjaan = isset($_POST['pelanggan_pekerjaan']) ? serialize($_POST['pelanggan_pekerjaan']) : [];
-        print_r($bank);
-        print_r($pekerjaan);
-        update_option('pelanggan_bank', array_map('sanitize_text_field', $_POST['pelanggan_bank'] ?? []));
-        update_option('pelanggan_pekerjaan', array_map('sanitize_text_field', $_POST['pelanggan_pekerjaan'] ?? []));
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Sanitize and store bank and pekerjaan options
+        $bank = isset($_POST['pelanggan_bank']) ? array_map('sanitize_text_field', $_POST['pelanggan_bank']) : [];
+        $pekerjaan = isset($_POST['pelanggan_pekerjaan']) ? array_map('sanitize_text_field', $_POST['pelanggan_pekerjaan']) : [];
+
+        update_option('pelanggan_bank', $bank);
+        update_option('pelanggan_pekerjaan', $pekerjaan);
         echo '<div class="updated"><p>Pengaturan berhasil disimpan!</p></div>';
     }
 
     // Ambil nilai dari database
     $pelanggan_bank = get_option('pelanggan_bank', []);
     $pelanggan_pekerjaan = get_option('pelanggan_pekerjaan', []);
-
-    // Form pengaturan
 ?>
     <div class="wrap">
         <h1>Setting Pelanggan</h1>
@@ -1175,26 +1173,44 @@ function render_settings_pelanggan_page()
                     <th scope="row"><label for="pelanggan_bank">Pilihan Bank</label></th>
                     <td>
                         <?php foreach ($pelanggan_bank as $bank) : ?>
-                            <input type="text" name="pelanggan_bank[]" value="<?php echo esc_attr($bank); ?>" class="regular-text">
-                        <?php endforeach; ?>
-                        <div class="clone">
-                            <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_bank[]" value="" class="regular-text">
-                            <button class="btn btn-remove">-</button>
-                        </div>
-                        <button class="btn btn-add">+</button>
+                            <div class="clone">
+                                <input type="text" style="width: 50%; margin-bottom: 10px;" name="pelanggan_bank[]" value="<?php echo esc_attr($bank); ?>" class="regular-text">
+                                <button type="button" class="btn btn-remove">-</button>
+                            </div>
+                        <?php endforeach;
+                        if ($pelanggan_bank == '') {
+                        ?>
+                            <div class="clone">
+                                <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_bank[]" value="" class="regular-text">
+                                <button type="button" class="btn btn-remove">-</button>
+                            </div>
+                        <?php
+                        }
+                        ?>
+
+                        <button type="button" class="btn btn-add">+</button>
                     </td>
                 </tr>
                 <tr class="cloneable">
                     <th scope="row"><label for="pelanggan_pekerjaan">Pekerjaan</label></th>
                     <td>
                         <?php foreach ($pelanggan_pekerjaan as $pekerjaan) : ?>
-                            <input type="text" name="pelanggan_pekerjaan[]" value="<?php echo esc_attr($pekerjaan); ?>" class="regular-text">
-                        <?php endforeach; ?>
-                        <div class="clone">
-                            <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_pekerjaan[]" value="" class="regular-text">
-                            <button class="btn btn-remove">-</button>
-                        </div>
-                        <button class="btn btn-add">+</button>
+                            <div class="clone">
+                                <input type="text" name="pelanggan_pekerjaan[]" style="width: 50%; margin-bottom: 10px;" value="<?php echo esc_attr($pekerjaan); ?>" class="regular-text">
+                                <button type="button" class="btn btn-remove">-</button>
+                            </div>
+                        <?php endforeach;
+
+                        if ($pelanggan_pekerjaan == '') {
+                        ?>
+                            <div class="clone">
+                                <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_pekerjaan[]" value="" class="regular-text">
+                                <button type="button" class="btn btn-remove">-</button>
+                            </div>
+                        <?php
+                        }
+                        ?>
+                        <button type="button" class="btn btn-add">+</button>
                     </td>
                 </tr>
             </table>
@@ -1216,12 +1232,12 @@ function render_settings_pelanggan_page()
             // Hapus field
             $(document).on('click', '.btn-remove', function(e) {
                 e.preventDefault();
-                // const rows = $(this).closest('table').find('tr').find('input');
-                // if (rows.length > 1) {
-                $(this).closest('.clone').remove(); // Hapus baris
-                // } else {
-                //     alert('Minimal harus ada satu field.');
-                // }
+                const cloneContainer = $(this).closest('.cloneable').find('.clone');
+                if (cloneContainer.length > 1) {
+                    $(this).closest('.clone').remove(); // Hapus baris
+                } else {
+                    alert('Minimal harus ada satu field.');
+                }
             });
         });
     </script>
