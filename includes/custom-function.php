@@ -1131,3 +1131,99 @@ function tampilkan_tabel_dokumen($atts)
 
 // Daftarkan shortcode
 add_shortcode('tabel-dokumen', 'tampilkan_tabel_dokumen');
+
+
+// Tambahkan submenu di menu admin
+function add_settings_pelanggan_submenu()
+{
+    add_submenu_page(
+        'edit.php?post_type=data_pelanggan', // Parent menu slug
+        'Setting Pelanggan',                // Page title
+        'Setting Pelanggan',                // Menu title
+        'manage_options',                   // Capability
+        'setting-pelanggan',                // Menu slug
+        'render_settings_pelanggan_page'    // Callback function
+    );
+}
+add_action('admin_menu', 'add_settings_pelanggan_submenu');
+
+
+function render_settings_pelanggan_page()
+{
+    // Simpan data jika form dikirim
+    if (isset($_POST['save_settings'])) {
+        $bank = isset($_POST['pelanggan_bank']) ? serialize($_POST['pelanggan_bank']) : [];
+        $pekerjaan = isset($_POST['pelanggan_pekerjaan']) ? serialize($_POST['pelanggan_pekerjaan']) : [];
+        print_r($bank);
+        print_r($pekerjaan);
+        update_option('pelanggan_bank', array_map('sanitize_text_field', $_POST['pelanggan_bank'] ?? []));
+        update_option('pelanggan_pekerjaan', array_map('sanitize_text_field', $_POST['pelanggan_pekerjaan'] ?? []));
+        echo '<div class="updated"><p>Pengaturan berhasil disimpan!</p></div>';
+    }
+
+    // Ambil nilai dari database
+    $pelanggan_bank = get_option('pelanggan_bank', []);
+    $pelanggan_pekerjaan = get_option('pelanggan_pekerjaan', []);
+
+    // Form pengaturan
+?>
+    <div class="wrap">
+        <h1>Setting Pelanggan</h1>
+        <form method="post" action="">
+            <table class="form-table">
+                <tr class="cloneable">
+                    <th scope="row"><label for="pelanggan_bank">Pilihan Bank</label></th>
+                    <td>
+                        <?php foreach ($pelanggan_bank as $bank) : ?>
+                            <input type="text" name="pelanggan_bank[]" value="<?php echo esc_attr($bank); ?>" class="regular-text">
+                        <?php endforeach; ?>
+                        <div class="clone">
+                            <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_bank[]" value="" class="regular-text">
+                            <button class="btn btn-remove">-</button>
+                        </div>
+                        <button class="btn btn-add">+</button>
+                    </td>
+                </tr>
+                <tr class="cloneable">
+                    <th scope="row"><label for="pelanggan_pekerjaan">Pekerjaan</label></th>
+                    <td>
+                        <?php foreach ($pelanggan_pekerjaan as $pekerjaan) : ?>
+                            <input type="text" name="pelanggan_pekerjaan[]" value="<?php echo esc_attr($pekerjaan); ?>" class="regular-text">
+                        <?php endforeach; ?>
+                        <div class="clone">
+                            <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_pekerjaan[]" value="" class="regular-text">
+                            <button class="btn btn-remove">-</button>
+                        </div>
+                        <button class="btn btn-add">+</button>
+                    </td>
+                </tr>
+            </table>
+            <?php submit_button('Simpan Pengaturan'); ?>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        jQuery(document).ready(function($) {
+            // Tambahkan field baru
+            $(document).on('click', '.btn-add', function(e) {
+                e.preventDefault();
+                const row = $(this).closest('.cloneable').find('.clone').last(); // Baris yang bisa di-clone
+                const newRow = row.clone(); // Duplikat baris
+                newRow.find('input').val(''); // Kosongkan input field
+                row.after(newRow); // Tambahkan setelah baris saat ini
+            });
+
+            // Hapus field
+            $(document).on('click', '.btn-remove', function(e) {
+                e.preventDefault();
+                // const rows = $(this).closest('table').find('tr').find('input');
+                // if (rows.length > 1) {
+                $(this).closest('.clone').remove(); // Hapus baris
+                // } else {
+                //     alert('Minimal harus ada satu field.');
+                // }
+            });
+        });
+    </script>
+<?php
+}
