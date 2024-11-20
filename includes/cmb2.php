@@ -193,6 +193,8 @@ function add_customer_data_metabox()
     $prefix = '_customer_data_';
     $current_user = wp_get_current_user();
     $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
+    $pelanggan_bank = get_option('pelanggan_bank', []);
+    $pelanggan_pekerjaan = get_option('pelanggan_pekerjaan', []);
 
     $cmb = new_cmb2_box(array(
         'id'           => 'customer_data_metabox',
@@ -241,15 +243,7 @@ function add_customer_data_metabox()
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'bank',
         'type'    => 'select',
-        'options' => array(
-            'BPR BBA'           => __('BPR BBA', 'cmb2'),
-            'BPR Pala Pusat'    => __('BPR Pala Pusat', 'cmb2'),
-            'BPR Pala Cabang'   => __('BPR Pala Cabang', 'cmb2'),
-            'BPR Danamas Prime' => __('BPR Danamas Prime', 'cmb2'),
-            'BPR Arum Mandiri'  => __('BPR Arum Mandiri', 'cmb2'),
-            'BPRS Madina Mandiri' => __('BPRS Madina Mandiri', 'cmb2'),
-            'BMT Sejahtera Ummat' => __('BMT Sejahtera Ummat', 'cmb2'),
-        ),
+        'options' => $pelanggan_bank,
         // 'attributes' => array(
         //     'style' => 'display:none;', // Hide the field initially
         // ),
@@ -260,28 +254,7 @@ function add_customer_data_metabox()
         'desc'    => __('', 'cmb2'),
         'id'      => $prefix . 'pekerjan',
         'type'    => 'select',
-        'options' => array(
-            'Pilih Opsi' => __('Pilih Opsi', 'cmb2'),
-            'Skmht' => __('Skmht', 'cmb2'),
-            'Apht'  => __('Apht', 'cmb2'),
-            'Fidusia' => __('Fidusia', 'cmb2'),
-            'Jual beli' => __('Jual beli', 'cmb2'),
-            'Hibah' => __('Hibah', 'cmb2'),
-            'Turun waris' => __('Turun waris', 'cmb2'),
-            'Aphb' => __('Aphb', 'cmb2'),
-            'Pendirian PT' => __('Pendirian PT', 'cmb2'),
-            'Pendirian CV' => __('Pendirian CV', 'cmb2'),
-            'Pendirian yayasan' => __('Pendirian yayasan', 'cmb2'),
-            'Pendirian PT perorangan' => __('Pendirian PT perorangan', 'cmb2'),
-            'Pendirian akta cabang' => __('Pendirian akta cabang', 'cmb2'),
-            'Perubahan PT' => __('Perubahan PT', 'cmb2'),
-            'Perub CV' => __('Perub CV', 'cmb2'),
-            'Perub Yayasan' => __('Perub Yayasan', 'cmb2'),
-            'Pecah sertifikat' => __('Pecah sertifikat', 'cmb2'),
-            'Pengeringan' => __('Pengeringan', 'cmb2'),
-            'PBG' => __('PBG', 'cmb2'),
-            'Peningkatan Hak' => __('Peningkatan Hak', 'cmb2'),
-        )
+        'options' => $pelanggan_pekerjaan
     ));
 
     $cmb->add_field(array(
