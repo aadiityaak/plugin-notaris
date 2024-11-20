@@ -1178,7 +1178,7 @@ function render_settings_pelanggan_page()
                                 <button type="button" class="btn btn-remove">-</button>
                             </div>
                         <?php endforeach;
-                        if (!is_array($pelanggan_bank)) {
+                        if (!$pelanggan_bank) {
                         ?>
                             <div class="clone">
                                 <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_bank[]" value="" class="regular-text">
@@ -1201,7 +1201,7 @@ function render_settings_pelanggan_page()
                             </div>
                         <?php endforeach;
 
-                        if (!is_array($pelanggan_pekerjaan)) {
+                        if (!$pelanggan_pekerjaan) {
                         ?>
                             <div class="clone">
                                 <input style="width: 50%; margin-bottom: 10px;" type="text" name="pelanggan_pekerjaan[]" value="" class="regular-text">
