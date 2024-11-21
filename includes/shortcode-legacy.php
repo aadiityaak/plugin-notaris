@@ -1317,10 +1317,6 @@ function data_konsumen()
                                                                 </li>
                                                                 <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
                                                                     <li class="list-group-item">
-                                                                        <div class="fw-bold">Nilai Transaksi</div>
-                                                                        <?php echo !empty(get_post_meta($post->ID, '_customer_data_nilai_transaksi', true)) ? get_post_meta($post->ID, '_customer_data_nilai_transaksi', true) : '-'; ?>
-                                                                    </li>
-                                                                    <li class="list-group-item">
                                                                         <div class="fw-bold">Harga Real</div>
                                                                         <?php echo !empty(get_post_meta($post->ID, '_customer_data_harga_real', true)) ? get_post_meta($post->ID, '_customer_data_harga_real', true) : '-'; ?>
                                                                     </li>
