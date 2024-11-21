@@ -885,7 +885,16 @@ function draft_kerja_shortcode()
                                                 $customer = get_post_meta($post->ID, 'customer_select', true);
                                                 $nama = get_post_meta($customer, '_customer_data_nama_lengkap', true);
                                                 $whatsapp = get_post_meta($customer, '_customer_data_whatsapp', true);
-                                                $pembayaran = get_post_meta($customer, '_customer_data_pembayaran', true);
+                                                // $pembayaran = get_post_meta($customer, '_customer_data_pembayaran', true);
+                                                $pembayaran = get_post_meta($post->ID, 'jenis_pembayaran', true);
+
+                                                if ($pembayaran == 'tunai') {
+                                                    echo 'Tunai';
+                                                } else if ($pembayaran == 'transfer') {
+                                                    echo 'Transfer';
+                                                } else {
+                                                    echo '-';
+                                                }
                                                 $biaya_transaksi = get_post_meta($customer, '_customer_data_nilai_transaksi', true);
                                                 $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
                                                 $harga_real = get_post_meta($customer, '_customer_data_harga_real', true);
@@ -907,7 +916,8 @@ function draft_kerja_shortcode()
                                                                         <li class="list-group-item"><b class="d">Tangal Order : </b> <?php echo $tanggal_order; ?></li>
                                                                         <li class="list-group-item"><b>Nama Customer : </b> <?php echo $nama; ?></li>
                                                                         <li class="list-group-item"><b>Whatsapp : </b> <?php echo $whatsapp; ?></li>
-                                                                        <li class="list-group-item"><b>Pembayaran : </b> <?php echo $pembayaran; ?></li>
+                                                                        <li class="list-group-item"><b>Pembayaran : </b> <?php echo ucwords(strtolower($pembayaran)); ?></li>
+                                                                        <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
                                                                         <!-- Hanya tampil di admin dan keuangan -->
                                                                         <?php if (current_user_can('administrator') || $jabatan_staff == 'keuangan'): ?>
                                                                             <li class="list-group-item"><b>Biaya Notaris: </b>
@@ -918,25 +928,31 @@ function draft_kerja_shortcode()
                                                                                     $dibayar = get_post_meta($post->ID, 'dibayar', true);
 
                                                                                     // Jika nilai kosong atau tidak valid, set ke 0
-                                                                                    $biaya_transaksi = preg_replace('/[^0-9]/', '', $biaya_transaksi);
-                                                                                    $biaya_transfer = preg_replace('/[^0-9]/', '', $biaya_transfer);
-                                                                                    $dibayar = preg_replace('/[^0-9]/', '', $dibayar);
+                                                                                    $biaya_transaksi = intval(preg_replace('/[^0-9]/', '', $biaya_transaksi));
+                                                                                    $biaya_transfer = intval(preg_replace('/[^0-9]/', '', $biaya_transfer));
+                                                                                    $dibayar = intval(preg_replace('/[^0-9]/', '', $dibayar));
 
-                                                                                    $total_biaya = (intval($biaya_transaksi) + intval($biaya_transfer));
+                                                                                    // Hitung total biaya notaris
+                                                                                    $total_biaya = $biaya_transaksi + $biaya_transfer;
+
+                                                                                    // Hitung kekurangan
+                                                                                    $kekurangan = $total_biaya - $dibayar;
 
                                                                                     // Format output
-                                                                                    $formatted_total_biaya = $total_biaya ? '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start" title="Dibayar Rp. ' . number_format(intval($dibayar), 2, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') . '</b>">Rp. ' . number_format(intval($total_biaya), 2, ',', '.') . '</a>' : '';
-                                                                                    $kurang = (intval($dibayar) && intval($total_biaya)) ? 'Rp. ' . number_format((intval($total_biaya) - intval($dibayar)), 2, ',', '.') : '';
+                                                                                    $formatted_total_biaya = $total_biaya > 0 ?
+                                                                                        '<a data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" data-bs-custom-class="text-start" title="Dibayar Rp. ' . number_format($dibayar, 0, ',', '.') . '<br><b>Kekurangan Rp. ' . number_format($kekurangan, 0, ',', '.') . '</b>">Rp. ' . number_format($total_biaya, 0, ',', '.') . '</a>' : 'Rp. 0';
+
                                                                                     echo $formatted_total_biaya;
-                                                                                    // echo $kurang ? '<br><small>-'.$kurang.'</small>' : '';
                                                                                 } else {
                                                                                     echo 'Post tidak ditemukan.';
                                                                                 }
-                                                                                ?></li>
+                                                                                ?>
+                                                                            </li>
+                                                                            <li class="list-group-item"><b>Dibayar: </b> Rp. <?php echo $dibayar > 0 ? number_format($dibayar, 0, ',', '.') : '-'; ?></li>
+                                                                            <li class="list-group-item text-danger"><b>Kekurangan: </b> Rp. <?php echo $kekurangan > 0 ? number_format($kekurangan, 0, ',', '.') : '-'; ?></li>
                                                                             <li class="list-group-item"><b>Harga Real: </b> Rp <?php echo $harga_real ? number_format($harga_real, 0, ',', '.') : '-'; ?></li>
                                                                             <li class="list-group-item"><b>Harga Kesepakatan: </b> Rp <?php echo $harga_kesepakatan ? number_format($harga_kesepakatan, 0, ',', '.') : '-'; ?></li>
                                                                         <?php endif; ?>
-                                                                        <li class="list-group-item"><b>Alamat : </b> <?php echo $alamat; ?></li>
                                                                     </ul>
                                                                 </div>
                                                                 <div class="col-md-12">
