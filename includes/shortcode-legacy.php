@@ -540,7 +540,6 @@ function draft_kerja_shortcode()
                         <th class="bg-blue text-white" scope="col">Kategori</th>
                         <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai BPHTB</th>
                         <th class="bg-blue text-white" scope="col" style="white-space: nowrap;">Nilai SSP</th>
-                        <th class="bg-blue text-white" scope="col">Keterangan</th>
                         <th class="bg-blue text-white" scope="col">Petugas</th>
                         <?php if ($status_post != 'selesai'): ?>
                             <th class="bg-blue text-white text-end" scope="col">Action</th>
@@ -806,23 +805,6 @@ function draft_kerja_shortcode()
                                         }
                                     }
                                     ?><br />
-                                </td>
-                                <td style="white-space: nowrap;">
-                                    <?php
-                                    $layanan = get_post_meta($post->ID, 'layanan', true);
-
-                                    // Periksa nilai layanan
-                                    if (!empty($layanan)) {
-                                        if ($layanan == 'Penjualan') {
-                                            echo 'Penjualan';
-                                        } else {
-                                            echo $layanan; // Tampilkan nilai lainnya
-                                        }
-                                    } else {
-                                        echo '-'; // Tampilkan pesan default jika kosong
-                                    }
-                                    ?>
-                                    <br />
                                 </td>
                                 <td style="white-space: nowrap;">
                                     <small>
