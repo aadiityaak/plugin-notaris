@@ -193,8 +193,16 @@ function add_customer_data_metabox()
     $prefix = '_customer_data_';
     $current_user = wp_get_current_user();
     $jabatan_staff = get_user_meta($current_user->ID, 'jabatan', true);
-    $pelanggan_bank = get_option('pelanggan_bank', []);
-    $pelanggan_pekerjaan = get_option('pelanggan_pekerjaan', []);
+    $pelanggan_banks = get_option('pelanggan_bank', []);
+    foreach ($pelanggan_banks as $value) {
+        $pelanggan_bank[$value] = $value;
+    }
+    $pelanggan_pekerjaan = [];
+    $pelanggan_pekerjaans = get_option('pelanggan_pekerjaan', []);
+    foreach ($pelanggan_pekerjaans as $value) {
+        $pelanggan_pekerjaan[$value] = $value;
+    }
+
 
     $cmb = new_cmb2_box(array(
         'id'           => 'customer_data_metabox',
@@ -563,11 +571,13 @@ add_action('cmb2_after_form', function () {
                 if (kategori === 'Bank') {
                     // Show the bank field if 'Bank' is selected
                     $('#_customer_data_bank').closest('.cmb-row').show();
+                    $('#_customer_data_pekerjan').closest('.cmb-row').hide();
                     $('#_customer_data_pekerjan_2').closest('.cmb-row').hide();
                     $('#_customer_data_pekerjaan_lainnya').closest('.cmb-row').hide();
                 } else {
                     // Hide the bank field if any other option is selected
                     $('#_customer_data_bank').closest('.cmb-row').hide();
+                    $('#_customer_data_pekerjan').closest('.cmb-row').show();
                     $('#_customer_data_pekerjan_2').closest('.cmb-row').show();
                     $('#_customer_data_pekerjaan_lainnya').closest('.cmb-row').show();
                 }
